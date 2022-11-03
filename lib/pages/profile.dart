@@ -1,35 +1,45 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/src/authentication.dart';
+import 'package:gtk_flutter/pages/loggedOut_profile.dart';
 import 'package:provider/provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+  @override
+  State<ProfilePage> createState() => ProfilePageState();
+}
+
+class ProfilePageState extends State<ProfilePage> {
   // This widget is the root of your application.
+  ApplicationState state = ApplicationState();
+  Widget profilePageLook(bool loggedIn) {
+    if (loggedIn == true) {
+      return ProfileScreen(
+        providers: const [],
+        actions: [
+          SignedOutAction(
+            ((context) {
+              Navigator.of(context).popUntil(ModalRoute.withName('/home'));
+            }),
+          ),
+        ],
+      );
+    } else {
+      return LoggedOut();
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text('Profile'),
         ),
-        body: ListView(
-          children: <Widget>[
-            Image.asset('assets/codelab.png'),
-            const SizedBox(height: 8),
-            Consumer<ApplicationState>(
-              builder: (context, appState, _) => AuthFunc(
-                  loggedIn: appState.loggedIn,
-                  signOut: () {
-                    FirebaseAuth.instance.signOut();
-                  }),
-            ),
-            const Divider(
-              height: 8,
-              thickness: 1,
-              indent: 8,
-              endIndent: 8,
-              color: Colors.grey,
-            ),
-          ],
+        body: Selector<ApplicationState, bool>(
+          selector: (_, appState) => appState.loggedIn,
+          builder: (_, loggedIn, __) {
+            return profilePageLook(loggedIn);
+          },
         ),
       );
 }

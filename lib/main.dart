@@ -13,8 +13,6 @@ import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'src/authentication.dart';
-import 'src/widgets.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -184,6 +182,9 @@ class ApplicationState extends ChangeNotifier {
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
+  bool getState() {
+    return _loggedIn;
+  }
 
   Future<void> init() async {
     await Firebase.initializeApp(

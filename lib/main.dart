@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gtk_flutter/my_flutter_app_icons.dart';
 import 'package:gtk_flutter/pages/calander.dart';
+import 'package:gtk_flutter/pages/create_workout.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
@@ -157,7 +160,7 @@ class MyHomePageState extends State<MyHomePage> {
             label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
+            icon: Icon(CustomIcon.speaker_notes_off),
             label: 'Workouts',
           ),
           BottomNavigationBarItem(
@@ -186,6 +189,10 @@ class ApplicationState extends ChangeNotifier {
     return _loggedIn;
   }
 
+  StreamSubscription<QuerySnapshot>? _exreciseListSubscription;
+  List<Exrecises> _exreciseList = [];
+  List<Exrecises> get exreciseList => _exreciseList;
+
   Future<void> init() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
@@ -197,10 +204,43 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
+        _exreciseListSubscription = FirebaseFirestore.instance
+            .collection('workouts')
+            .orderBy('timestamp', descending: true)
+            .snapshots()
+            .listen((snapshot) {
+          _exreciseList = [];
+          for (final document in snapshot.docs) {
+            _exreciseList.add(
+              Exrecises(
+                name: document.data()['name'] as String,
+                message: document.data()['text'] as String,
+              ),
+            );
+          }
+          notifyListeners();
+        });
       } else {
         _loggedIn = false;
+        _exreciseList = [];
+        _exreciseListSubscription?.cancel();
       }
       notifyListeners();
+    });
+  }
+
+  Future<DocumentReference> createNewWorkout(String message) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('workouts')
+        .add(<String, dynamic>{
+      'text': message,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 }

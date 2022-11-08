@@ -34,144 +34,160 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add exercise'),
+        title: const Text('Add Exercise'),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
               top: 40.0, bottom: 40.0, left: 20.0, right: 20.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 0.0, bottom: 20.0, left: 0.0, right: 0.0),
-                child: Flexible(
-                  flex: 1,
-                  fit: FlexFit.loose,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Exercise Name',
-                      contentPadding: const EdgeInsets.only(
-                          left: 20.0, bottom: 4.0, top: 8.0),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.text,
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 1,
-                fit: FlexFit.loose,
-                child: Row(
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
                   children: [
-                    Flexible(
-                      flex: 1,
-                      fit: FlexFit.tight,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: 12,
-                          bottom: 0,
-                          right: 0,
-                          left: 0,
-                        ),
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Category:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 0.0, bottom: 20.0, left: 0.0, right: 0.0),
+                      child: Flexible(
+                        flex: 1,
+                        fit: FlexFit.loose,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Exercise Name',
+                            contentPadding: const EdgeInsets.only(
+                                left: 20.0, bottom: 4.0, top: 8.0),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                           ),
+                          keyboardType: TextInputType.text,
                         ),
                       ),
                     ),
-                    Flexible(
-                      flex: 3,
-                      fit: FlexFit.tight,
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            isExpanded: true,
-                            hint: Text(
-                              'Select Category',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).hintColor,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 0.0, bottom: 10.0, left: 0.0, right: 0.0),
+                      child: Flexible(
+                        flex: 1,
+                        fit: FlexFit.loose,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              fit: FlexFit.tight,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: 12,
+                                  bottom: 12,
+                                  right: 0,
+                                  left: 0,
+                                ),
+                                child: const Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    'Category:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
                               ),
                             ),
-                            items: addDividersAfterItems(items),
-                            customItemsHeights: getCustomItemsHeights(items),
-                            value: selectedValue,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValue = value as String;
-                              });
-                            },
-                            buttonHeight: 40,
-                            dropdownMaxHeight: 200,
-                            buttonWidth: double.infinity,
-                            itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            Flexible(
+                              flex: 4,
+                              fit: FlexFit.tight,
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton2(
+                                    isExpanded: true,
+                                    hint: Text(
+                                      'Select Category',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context).hintColor,
+                                      ),
+                                    ),
+                                    items: addDividersAfterItems(items),
+                                    customItemsHeights:
+                                        getCustomItemsHeights(items),
+                                    value: selectedValue,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedValue = value as String;
+                                      });
+                                    },
+                                    buttonHeight: 40,
+                                    dropdownMaxHeight: 200,
+                                    buttonWidth: double.infinity,
+                                    itemPadding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 5,
+                      fit: FlexFit.loose,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Exercise Description',
+                          alignLabelWithHint: true,
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        minLines: 10, // <-- SEE HERE
+                        maxLines: 10, // <-- SEE HERE
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20.0, bottom: 20.0, left: 0.0, right: 0.0),
+                      child: Flexible(
+                        flex: 1,
+                        fit: FlexFit.loose,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Example Video URL',
+                            border: OutlineInputBorder(),
+                          ),
+
+                          keyboardType: TextInputType.url,
+                          minLines: 1, // <-- SEE HERE
+                          maxLines: 1, // <-- SEE HERE
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.loose,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Save",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ],
-                ),
-              ),
-              Flexible(
-                flex: 4,
-                fit: FlexFit.loose,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Exercise Description',
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  minLines: 10, // <-- SEE HERE
-                  maxLines: 10, // <-- SEE HERE
-                ),
-              ),
-              Flexible(
-                flex: 1,
-                fit: FlexFit.tight,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Example Video URL',
-                    border: OutlineInputBorder(),
-                  ),
-
-                  keyboardType: TextInputType.url,
-                  minLines: 1, // <-- SEE HERE
-                  maxLines: 1, // <-- SEE HERE
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 10,
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                ),
-                child: MaterialButton(
-                  color: Colors.blueAccent,
-                  onPressed: () {},
-                  child: Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
             ],

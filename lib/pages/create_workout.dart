@@ -1,11 +1,11 @@
 import 'dart:async'; // new
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
+import 'package:gtk_flutter/pages/create_exercise.dart';
 import 'package:gtk_flutter/src/widgets.dart';
-import 'package:gtk_flutter/utils/firebase.dart';
+import 'package:gtk_flutter/utils/dropdown.dart';
 import 'package:provider/provider.dart';
 
 class SecondRoute extends StatefulWidget {
@@ -29,51 +29,9 @@ class SecondRouteState extends State<SecondRoute> {
     'Hamstrings',
     'Quads',
     'Triceps',
+    'Other',
   ];
-  List<DropdownMenuItem<String>> addDividersAfterItems(List<String> items) {
-    List<DropdownMenuItem<String>> menuItems = [];
-    for (var item in items) {
-      menuItems.addAll(
-        [
-          DropdownMenuItem<String>(
-            value: item,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                item,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ),
-          //If it's last item, we will not add Divider after it.
-          if (item != items.last)
-            const DropdownMenuItem<String>(
-              enabled: false,
-              child: Divider(),
-            ),
-        ],
-      );
-    }
-    return menuItems;
-  }
 
-  List<double> _getCustomItemsHeights() {
-    List<double> itemsHeights = [];
-    for (var i = 0; i < (items.length * 2) - 1; i++) {
-      if (i.isEven) {
-        itemsHeights.add(40);
-      }
-      //Dividers indexes will be the odd indexes
-      if (i.isOdd) {
-        itemsHeights.add(4);
-      }
-    }
-    return itemsHeights;
-  }
-
-  final List<double> gapSize = [12, 12, 4, 10];
   String? selectedValue;
 
   @override
@@ -84,11 +42,15 @@ class SecondRouteState extends State<SecondRoute> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(
-              Icons.more_vert,
+              Icons.add,
               color: Colors.white,
             ),
             onPressed: () {
-              // do something
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CreateExerciseRoute()),
+              );
             },
           )
         ],
@@ -129,15 +91,15 @@ class SecondRouteState extends State<SecondRoute> {
                     flex: 1,
                     child: Padding(
                       padding: EdgeInsets.only(
-                        top: gapSize[0],
-                        bottom: gapSize[1],
-                        right: gapSize[2],
-                        left: gapSize[3],
+                        top: 12,
+                        bottom: 12,
+                        right: 0,
+                        left: 0,
                       ),
                       child: const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          'Exercises:',
+                          'Show Exercises:',
                           style: TextStyle(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -152,14 +114,14 @@ class SecondRouteState extends State<SecondRoute> {
                         child: DropdownButton2(
                           isExpanded: true,
                           hint: Text(
-                            'Select Item',
+                            'Select Category',
                             style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(context).hintColor,
                             ),
                           ),
                           items: addDividersAfterItems(items),
-                          customItemsHeights: _getCustomItemsHeights(),
+                          customItemsHeights: getCustomItemsHeights(items),
                           value: selectedValue,
                           onChanged: (value) {
                             setState(() {

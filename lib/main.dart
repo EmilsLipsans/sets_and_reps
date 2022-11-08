@@ -160,7 +160,7 @@ class MyHomePageState extends State<MyHomePage> {
             label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CustomIcon.speaker_notes_off),
+            icon: Icon(Icons.fitness_center),
             label: 'Workouts',
           ),
           BottomNavigationBarItem(

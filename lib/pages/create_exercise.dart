@@ -36,7 +36,7 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
       appBar: AppBar(
         title: const Text('Add Exercise'),
       ),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -148,8 +148,8 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.multiline,
-                        minLines: 10, // <-- SEE HERE
-                        maxLines: 10, // <-- SEE HERE
+                        minLines: 5, // <-- SEE HERE
+                        maxLines: 5, // <-- SEE HERE
                       ),
                     ),
                     Padding(

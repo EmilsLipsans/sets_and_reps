@@ -29,168 +29,167 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
     'Other',
   ];
   String? selectedValue;
-
+  final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
+  final _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Exercise'),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        extendedPadding:
+            EdgeInsets.only(top: 0, bottom: 0, left: 100.0, right: 100.0),
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            await widget.addMessage(_controller.text);
+            _controller.clear();
+          }
+        },
+        tooltip: 'Save Exercise',
+        label: const Text('Save'),
+      ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
               top: 40.0, bottom: 40.0, left: 20.0, right: 20.0),
-          child: CustomScrollView(
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 0.0, bottom: 20.0, left: 0.0, right: 0.0),
-                      child: Flexible(
-                        flex: 1,
-                        fit: FlexFit.loose,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Exercise Name',
-                            contentPadding: const EdgeInsets.only(
-                                left: 20.0, bottom: 4.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue),
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          keyboardType: TextInputType.text,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0.0, bottom: 20.0, left: 0.0, right: 0.0),
+                  child: Flexible(
+                    flex: 1,
+                    fit: FlexFit.loose,
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Exercise Name',
+                        contentPadding: const EdgeInsets.only(
+                            left: 20.0, bottom: 4.0, top: 8.0),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Enter Exercise Name';
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.text,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 0.0, bottom: 10.0, left: 0.0, right: 0.0),
-                      child: Flexible(
-                        flex: 1,
-                        fit: FlexFit.loose,
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              fit: FlexFit.tight,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: 12,
-                                  bottom: 12,
-                                  right: 0,
-                                  left: 0,
-                                ),
-                                child: const Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    'Category:',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              flex: 4,
-                              fit: FlexFit.tight,
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2(
-                                    isExpanded: true,
-                                    hint: Text(
-                                      'Select Category',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).hintColor,
-                                      ),
-                                    ),
-                                    items: addDividersAfterItems(items),
-                                    customItemsHeights:
-                                        getCustomItemsHeights(items),
-                                    value: selectedValue,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedValue = value as String;
-                                      });
-                                    },
-                                    buttonHeight: 40,
-                                    dropdownMaxHeight: 200,
-                                    buttonWidth: double.infinity,
-                                    itemPadding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 5,
-                      fit: FlexFit.loose,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Exercise Description',
-                          alignLabelWithHint: true,
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.multiline,
-                        minLines: 5, // <-- SEE HERE
-                        maxLines: 5, // <-- SEE HERE
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20.0, bottom: 20.0, left: 0.0, right: 0.0),
-                      child: Flexible(
-                        flex: 1,
-                        fit: FlexFit.loose,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Example Video URL',
-                            border: OutlineInputBorder(),
-                          ),
-
-                          keyboardType: TextInputType.url,
-                          minLines: 1, // <-- SEE HERE
-                          maxLines: 1, // <-- SEE HERE
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      fit: FlexFit.loose,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Save",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0.0, bottom: 10.0, left: 0.0, right: 0.0),
+                  child: Flexible(
+                    flex: 1,
+                    fit: FlexFit.loose,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          fit: FlexFit.tight,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: 12,
+                              bottom: 12,
+                              right: 0,
+                              left: 0,
+                            ),
+                            child: const Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                'Category:',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 4,
+                          fit: FlexFit.tight,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                isExpanded: true,
+                                hint: Text(
+                                  'Select Category',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                                items: addDividersAfterItems(items),
+                                customItemsHeights:
+                                    getCustomItemsHeights(items),
+                                value: selectedValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedValue = value as String;
+                                  });
+                                },
+                                buttonHeight: 40,
+                                dropdownMaxHeight: 200,
+                                buttonWidth: double.infinity,
+                                itemPadding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
+                  fit: FlexFit.loose,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Exercise Description',
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    minLines: 5, // <-- SEE HERE
+                    maxLines: 5, // <-- SEE HERE
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 20.0, bottom: 20.0, left: 0.0, right: 0.0),
+                  child: Flexible(
+                    flex: 1,
+                    fit: FlexFit.loose,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Example Video URL',
+                        border: OutlineInputBorder(),
+                      ),
+
+                      keyboardType: TextInputType.url,
+                      minLines: 1, // <-- SEE HERE
+                      maxLines: 1, // <-- SEE HERE
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -220,56 +219,154 @@ class NewWorkout extends StatefulWidget {
 class _NewWorkoutState extends State<NewWorkout> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
   final _controller = TextEditingController();
-
+  static const List<String> items = [
+    'Abs',
+    'Back',
+    'Biceps',
+    'Calves',
+    'Cardio',
+    'Chest',
+    'Forearms',
+    'Full Body',
+    'Glutes',
+    'Hamstrings',
+    'Quads',
+    'Triceps',
+    'Other',
+  ];
+  String? selectedValue;
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
+          padding: const EdgeInsets.only(
+              top: 0.0, bottom: 20.0, left: 0.0, right: 0.0),
+          child: Flexible(
+            flex: 1,
+            fit: FlexFit.loose,
+            child: TextFormField(
+              controller: _controller,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Exercise Name',
+                contentPadding:
+                    const EdgeInsets.only(left: 20.0, bottom: 4.0, top: 8.0),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter Exercise Name';
+                }
+                return null;
+              },
+              keyboardType: TextInputType.text,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+              top: 0.0, bottom: 10.0, left: 0.0, right: 0.0),
+          child: Flexible(
+            flex: 1,
+            fit: FlexFit.loose,
             child: Row(
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Leave a message',
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 12,
+                      bottom: 12,
+                      right: 0,
+                      left: 0,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter your message to continue';
-                      }
-                      return null;
-                    },
+                    child: const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Category:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                StyledButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await widget.addMessage(_controller.text);
-                      _controller.clear();
-                    }
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(Icons.send),
-                      SizedBox(width: 4),
-                      Text('SEND'),
-                    ],
+                Flexible(
+                  flex: 4,
+                  fit: FlexFit.tight,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        isExpanded: true,
+                        hint: Text(
+                          'Select Category',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                        items: addDividersAfterItems(items),
+                        customItemsHeights: getCustomItemsHeights(items),
+                        value: selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value as String;
+                          });
+                        },
+                        buttonHeight: 40,
+                        dropdownMaxHeight: 200,
+                        buttonWidth: double.infinity,
+                        itemPadding:
+                            const EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        for (var message in widget.messages)
-          Paragraph('${message.name}: ${message.message}'),
-        const SizedBox(height: 8),
+        Flexible(
+          flex: 5,
+          fit: FlexFit.loose,
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Exercise Description',
+              alignLabelWithHint: true,
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.multiline,
+            minLines: 5, // <-- SEE HERE
+            maxLines: 5, // <-- SEE HERE
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+              top: 20.0, bottom: 20.0, left: 0.0, right: 0.0),
+          child: Flexible(
+            flex: 1,
+            fit: FlexFit.loose,
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Example Video URL',
+                border: OutlineInputBorder(),
+              ),
+
+              keyboardType: TextInputType.url,
+              minLines: 1, // <-- SEE HERE
+              maxLines: 1, // <-- SEE HERE
+            ),
+          ),
+        ),
       ],
     );
   }

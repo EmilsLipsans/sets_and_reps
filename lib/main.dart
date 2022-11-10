@@ -256,12 +256,12 @@ class ApplicationState extends ChangeNotifier {
     return FirebaseFirestore.instance
         .collection('exerices')
         .add(<String, dynamic>{
-      'name': message,
+      'text': message,
       'description': description,
       'url': url,
       'category': category,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
+      'name': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }

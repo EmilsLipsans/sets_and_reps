@@ -58,7 +58,8 @@ class _MyTabbedPageState extends State<WorkoutsPage>
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SecondRoute()),
+              MaterialPageRoute(
+                  builder: (context) => const CreateWorkoutRoute()),
             );
           },
           tooltip: 'Create Workout',

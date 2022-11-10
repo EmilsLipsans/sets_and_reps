@@ -74,7 +74,7 @@ class _NewExerciseState extends State<NewExercise> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 40.0, bottom: 50.0, left: 20.0, right: 20.0),
+            top: 40.0, bottom: 40.0, left: 20.0, right: 20.0),
         child: Form(
           key: _formKey,
           child: CustomScrollView(

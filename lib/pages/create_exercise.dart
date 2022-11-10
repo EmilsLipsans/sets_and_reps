@@ -74,7 +74,7 @@ class _NewExerciseState extends State<NewExercise> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 40.0, bottom: 40.0, left: 20.0, right: 20.0),
+            top: 40.0, bottom: 50.0, left: 20.0, right: 20.0),
         child: Form(
           key: _formKey,
           child: CustomScrollView(
@@ -93,7 +93,7 @@ class _NewExerciseState extends State<NewExercise> {
                             left: 10.0, bottom: 4.0, top: 8.0),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(4.0),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: const BorderSide(color: Colors.grey),
@@ -111,65 +111,47 @@ class _NewExerciseState extends State<NewExercise> {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: 12,
-                              bottom: 12,
-                              right: 0,
-                              left: 12,
-                            ),
-                            child: const Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                'Category:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
+                    DropdownButtonFormField2(
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding:
+                            EdgeInsets.only(left: 10.0, bottom: 4.0, top: 8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        Flexible(
-                          flex: 2,
-                          fit: FlexFit.tight,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                isExpanded: true,
-                                hint: Text(
-                                  'Select Category',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).hintColor,
-                                  ),
-                                ),
-                                items: addDividersAfterItems(items),
-                                customItemsHeights:
-                                    getCustomItemsHeights(items),
-                                value: selectedValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = value as String;
-                                  });
-                                },
-                                buttonHeight: 40,
-                                dropdownMaxHeight: 200,
-                                buttonWidth: double.infinity,
-                                itemPadding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                              ),
-                            ),
-                          ),
+                      ),
+                      isExpanded: true,
+                      hint: Text(
+                        'Select Category',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).hintColor,
                         ),
-                      ],
+                      ),
+                      items: addDividersAfterItems(items),
+                      customItemsHeights: getCustomItemsHeights(items),
+                      value: selectedValue,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Select Exercise Category';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value as String;
+                        });
+                      },
+                      buttonHeight: 40,
+                      dropdownMaxHeight: 200,
+                      buttonWidth: double.infinity,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      dropdownDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 40,
                     ),
                     TextFormField(
                       maxLength: 255,
@@ -183,7 +165,9 @@ class _NewExerciseState extends State<NewExercise> {
                           bottom: 12.0,
                         ),
                         alignLabelWithHint: true,
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       keyboardType: TextInputType.multiline,
                       minLines: 5, // <-- SEE HERE
@@ -203,7 +187,9 @@ class _NewExerciseState extends State<NewExercise> {
                           right: 12.0,
                           bottom: 12.0,
                         ),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
 
                       keyboardType: TextInputType.url,
@@ -219,10 +205,20 @@ class _NewExerciseState extends State<NewExercise> {
                               _nameController.text,
                               _descriptionController.text,
                               _urlController.text,
-                              1);
+                              getItemPos(selectedValue as String, items));
                           _nameController.clear();
                           _urlController.clear();
                           _descriptionController.clear();
+                          final snackBar = SnackBar(
+                            content: const Text('Exercise Saved'),
+                            action: SnackBarAction(
+                              label: 'Show Exercise',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       },
                       height: 50,
@@ -232,7 +228,7 @@ class _NewExerciseState extends State<NewExercise> {
                         style: TextStyle(color: Colors.white),
                       ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(24)),
                     ),
                   ],
                 ),

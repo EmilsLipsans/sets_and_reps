@@ -29,6 +29,15 @@ List<DropdownMenuItem<String>> addDividersAfterItems(List<String> items) {
   return menuItems;
 }
 
+int getItemPos(String selectedValue, List<String> items) {
+  int pos = 1;
+  for (var item in items) {
+    if (item == selectedValue) return pos;
+    pos += 1;
+  }
+  return 0;
+}
+
 List<double> getCustomItemsHeights(List items) {
   List<double> itemsHeights = [];
   for (var i = 0; i < (items.length * 2) - 1; i++) {

@@ -22,7 +22,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
       appBar: AppBar(
         title: const Text('Add Workout'),
       ),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(
           children: [
@@ -61,47 +61,41 @@ class NewWorkout extends StatefulWidget {
 }
 
 class _NewWorkoutState extends State<NewWorkout> {
-  Widget exercisesCards(){
+  Widget exerciseCards(message) {
     return Card(
-                            clipBehavior: Clip.hardEdge,
-                            child: ListTile(
-                              leading: IconButton(
-                                icon: Icon(
-                                  Icons.add_circle_rounded,
-                                  color: Colors.blueAccent,
-                                ),
-                                onPressed: () => print('select'),
-                              ),
-                              title: Text(
-                                  '${message.name}: ${message.message}: ${message.category}'),
-                              trailing: PopupMenuButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
-                                ),
-                                icon: Icon(
-                                  Icons.more_vert,
-                                ),
-                                itemBuilder: (BuildContext context) =>
-                                    <PopupMenuEntry>[
-                                  const PopupMenuItem(
-                                    child: Text('Details'),
-                                  ),
-                                  PopupMenuDivider(),
-                                  const PopupMenuItem(
-                                    child: Text('Edit'),
-                                  ),
-                                  PopupMenuDivider(),
-                                  const PopupMenuItem(
-                                    child: Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
+      clipBehavior: Clip.hardEdge,
+      child: ListTile(
+        leading: IconButton(
+          icon: Icon(
+            Icons.add_circle_rounded,
+            color: Colors.blueAccent,
+          ),
+          onPressed: () => print('select'),
+        ),
+        title: Text('${message.name}'),
+        trailing: PopupMenuButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+          icon: Icon(
+            Icons.more_vert,
+          ),
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            const PopupMenuItem(
+              child: Text('Edit'),
+            ),
+            PopupMenuDivider(),
+            const PopupMenuItem(
+              child: Text('Delete'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
   final _nameController = TextEditingController();
   String? selectedValue;
@@ -203,62 +197,12 @@ class _NewWorkoutState extends State<NewWorkout> {
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
                       for (var message in widget.messages)
-                        Card(
-                          clipBehavior: Clip.hardEdge,
-                          child: InkWell(
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              debugPrint('Card tapped.');
-                            },
-                            child: ListTile(
-                              title: Text(
-                                  '${message.name}: ${message.message}: ${message.category}'),
-                              trailing: Icon(Icons.more_vert),
-                            ),
-                          ),
-                        ),
+                        exerciseCards(message),
                     ] else
                       for (var message in widget.messages)
                         if (message.category ==
                             filterByItemPos(selectedValue as String, items))
-                          Card(
-                            clipBehavior: Clip.hardEdge,
-                            child: ListTile(
-                              leading: IconButton(
-                                icon: Icon(
-                                  Icons.add_circle_rounded,
-                                  color: Colors.blueAccent,
-                                ),
-                                onPressed: () => print('select'),
-                              ),
-                              title: Text(
-                                  '${message.name}: ${message.message}: ${message.category}'),
-                              trailing: PopupMenuButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
-                                ),
-                                icon: Icon(
-                                  Icons.more_vert,
-                                ),
-                                itemBuilder: (BuildContext context) =>
-                                    <PopupMenuEntry>[
-                                  const PopupMenuItem(
-                                    child: Text('Details'),
-                                  ),
-                                  PopupMenuDivider(),
-                                  const PopupMenuItem(
-                                    child: Text('Edit'),
-                                  ),
-                                  PopupMenuDivider(),
-                                  const PopupMenuItem(
-                                    child: Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          exerciseCards(message),
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
@@ -292,9 +236,9 @@ class _NewWorkoutState extends State<NewWorkout> {
                     );
                     _nameController.clear();
                     final snackBar = SnackBar(
-                      content: const Text('Exercise Saved'),
+                      content: const Text('Workout Saved'),
                       action: SnackBarAction(
-                        label: 'Show Exercise',
+                        label: 'Show Workout',
                         onPressed: () {
                           // Some code to undo the change.
                         },

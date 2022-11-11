@@ -25,7 +25,7 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
           children: [
             Expanded(
               child: NewExercise(
-                addMessage: (name, description, url, category) => appState
+                addExercise: (name, description, url, category) => appState
                     .createNewExercise(name, description, url, category),
               ),
             ),
@@ -39,10 +39,10 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
 class NewExercise extends StatefulWidget {
   const NewExercise({
     super.key,
-    required this.addMessage,
+    required this.addExercise,
   });
   final FutureOr<void> Function(
-      String name, String description, String url, int category) addMessage;
+      String name, String description, String url, int category) addExercise;
 
   @override
   State<NewExercise> createState() => _NewExerciseState();
@@ -201,7 +201,7 @@ class _NewExerciseState extends State<NewExercise> {
                       color: Colors.blueAccent,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await widget.addMessage(
+                          await widget.addExercise(
                               _nameController.text,
                               _descriptionController.text,
                               _urlController.text,

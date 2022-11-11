@@ -20,22 +20,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CreateExerciseRoute()),
-              );
-            },
-          )
-        ],
-        title: const Text('Add Exercise'),
+        title: const Text('Add Workout'),
       ),
       resizeToAvoidBottomInset: true,
       body: Consumer<ApplicationState>(
@@ -55,9 +40,11 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
 }
 
 class Exrecises {
-  Exrecises({required this.name, required this.message});
+  Exrecises(
+      {required this.name, required this.message, required this.category});
   final String name;
   final String message;
+  final int category;
 }
 
 class NewWorkout extends StatefulWidget {
@@ -74,10 +61,52 @@ class NewWorkout extends StatefulWidget {
 }
 
 class _NewWorkoutState extends State<NewWorkout> {
+  Widget exercisesCards(){
+    return Card(
+                            clipBehavior: Clip.hardEdge,
+                            child: ListTile(
+                              leading: IconButton(
+                                icon: Icon(
+                                  Icons.add_circle_rounded,
+                                  color: Colors.blueAccent,
+                                ),
+                                onPressed: () => print('select'),
+                              ),
+                              title: Text(
+                                  '${message.name}: ${message.message}: ${message.category}'),
+                              trailing: PopupMenuButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                icon: Icon(
+                                  Icons.more_vert,
+                                ),
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry>[
+                                  const PopupMenuItem(
+                                    child: Text('Details'),
+                                  ),
+                                  PopupMenuDivider(),
+                                  const PopupMenuItem(
+                                    child: Text('Edit'),
+                                  ),
+                                  PopupMenuDivider(),
+                                  const PopupMenuItem(
+                                    child: Text('Delete'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+  }
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
   final _nameController = TextEditingController();
   String? selectedValue;
   static const List<String> items = [
+    'All',
     'Abs',
     'Back',
     'Biceps',
@@ -167,25 +196,89 @@ class _NewWorkoutState extends State<NewWorkout> {
                 height: 20,
               ),
               SizedBox(
-                height: 200,
+                height: 280,
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   children: <Widget>[
-                    for (var message in widget.messages)
-                      Card(
-                        clipBehavior: Clip.hardEdge,
-                        child: InkWell(
-                          splashColor: Colors.blue.withAlpha(30),
-                          onTap: () {
-                            debugPrint('Card tapped.');
-                          },
-                          child: ListTile(
-                            title: Text('${message.name}: ${message.message}'),
-                            trailing: Icon(Icons.more_vert),
+                    if (selectedValue == null || selectedValue == 'All') ...[
+                      for (var message in widget.messages)
+                        Card(
+                          clipBehavior: Clip.hardEdge,
+                          child: InkWell(
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              debugPrint('Card tapped.');
+                            },
+                            child: ListTile(
+                              title: Text(
+                                  '${message.name}: ${message.message}: ${message.category}'),
+                              trailing: Icon(Icons.more_vert),
+                            ),
+                          ),
+                        ),
+                    ] else
+                      for (var message in widget.messages)
+                        if (message.category ==
+                            filterByItemPos(selectedValue as String, items))
+                          Card(
+                            clipBehavior: Clip.hardEdge,
+                            child: ListTile(
+                              leading: IconButton(
+                                icon: Icon(
+                                  Icons.add_circle_rounded,
+                                  color: Colors.blueAccent,
+                                ),
+                                onPressed: () => print('select'),
+                              ),
+                              title: Text(
+                                  '${message.name}: ${message.message}: ${message.category}'),
+                              trailing: PopupMenuButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                icon: Icon(
+                                  Icons.more_vert,
+                                ),
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry>[
+                                  const PopupMenuItem(
+                                    child: Text('Details'),
+                                  ),
+                                  PopupMenuDivider(),
+                                  const PopupMenuItem(
+                                    child: Text('Edit'),
+                                  ),
+                                  PopupMenuDivider(),
+                                  const PopupMenuItem(
+                                    child: Text('Delete'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                    Card(
+                      clipBehavior: Clip.hardEdge,
+                      child: InkWell(
+                        splashColor: Color.fromARGB(255, 1, 179, 7),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const CreateExerciseRoute()),
+                          );
+                        },
+                        child: ListTile(
+                          tileColor: Color.fromARGB(255, 131, 241, 135),
+                          title: Center(
+                            child: Text('Add New Exercise'),
                           ),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),

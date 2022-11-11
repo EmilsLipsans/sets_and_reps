@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gtk_flutter/pages/create_exercise.dart';
 import 'package:gtk_flutter/pages/start_workout.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,7 +14,7 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const StartWorkoutRoute()),
+                    builder: (context) => const CreateExerciseRoute()),
               );
             },
             tooltip: 'Start Workout',

@@ -38,6 +38,15 @@ int getItemPos(String selectedValue, List<String> items) {
   return 0;
 }
 
+int filterByItemPos(String selectedValue, List<String> items) {
+  int pos = 0;
+  for (var item in items) {
+    if (item == selectedValue) return pos;
+    pos += 1;
+  }
+  return 0;
+}
+
 List<double> getCustomItemsHeights(List items) {
   List<double> itemsHeights = [];
   for (var i = 0; i < (items.length * 2) - 1; i++) {

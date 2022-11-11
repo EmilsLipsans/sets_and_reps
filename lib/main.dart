@@ -208,7 +208,7 @@ class ApplicationState extends ChangeNotifier {
       if (user != null) {
         _loggedIn = true;
         _exreciseListSubscription = FirebaseFirestore.instance
-            .collection('workouts')
+            .collection('exerices')
             .orderBy('timestamp', descending: true)
             .snapshots()
             .listen((snapshot) {
@@ -217,7 +217,8 @@ class ApplicationState extends ChangeNotifier {
             _exreciseList.add(
               Exrecises(
                 name: document.data()['name'] as String,
-                message: document.data()['text'] as String,
+                message: document.data()['url'] as String,
+                category: document.data()['category'] as int,
               ),
             );
           }

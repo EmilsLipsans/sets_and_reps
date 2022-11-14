@@ -216,7 +216,9 @@ class ApplicationState extends ChangeNotifier {
           for (final document in snapshot.docs) {
             _exreciseList.add(
               Exrecises(
+                docID: document.id,
                 name: document.data()['name'] as String,
+                description: document.data()['description'] as String,
                 message: document.data()['url'] as String,
                 category: document.data()['category'] as int,
               ),
@@ -257,6 +259,26 @@ class ApplicationState extends ChangeNotifier {
     return FirebaseFirestore.instance
         .collection('exerices')
         .add(<String, dynamic>{
+      'name': name,
+      'description': description,
+      'url': url,
+      'category': category,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'username': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
+  Future<void> updateExercise(
+      String name, String description, String url, int category, String docID) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('exerices')
+        .doc('$docID')
+        .update({
       'name': name,
       'description': description,
       'url': url,

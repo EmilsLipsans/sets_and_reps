@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/create_exercise.dart';
+import 'package:gtk_flutter/pages/update_exercise.dart';
 import 'package:gtk_flutter/src/widgets.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
@@ -42,9 +43,15 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
 
 class Exrecises {
   Exrecises(
-      {required this.name, required this.message, required this.category});
+      {required this.docID,
+      required this.name,
+      required this.message,
+      required this.description,
+      required this.category});
+  final String docID;
   final String name;
   final String message;
+  final String description;
   final int category;
 }
 
@@ -246,7 +253,14 @@ class _NewWorkoutState extends State<NewWorkout> {
         trailing: PopupMenuButton(
           onSelected: (value) {
             if (value == 0) {}
-            if (value == 1) {}
+            if (value == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        UpdateExerciseRoute(message: message)),
+              );
+            }
             if (value == 2) {}
           },
           shape: RoundedRectangleBorder(

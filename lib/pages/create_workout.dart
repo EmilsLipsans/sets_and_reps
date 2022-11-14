@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/create_exercise.dart';
+import 'package:gtk_flutter/pages/exercise_details.dart';
 import 'package:gtk_flutter/pages/update_exercise.dart';
 import 'package:gtk_flutter/src/widgets.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 // new
 
@@ -256,71 +258,13 @@ class _NewWorkoutState extends State<NewWorkout> {
         trailing: PopupMenuButton(
           onSelected: (value) {
             if (value == 0) {
-              showDialog(
-                  context: context,
-                  builder: (_) => new AlertDialog(
-                        title: Center(
-                          child: Text('${message.name}'),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(18.0))),
-                        content: Builder(
-                          builder: (context) {
-                            // Get available height and width of the build area of this widget. Make a choice depending on the size.
-                            var height = MediaQuery.of(context).size.height;
-                            var width = MediaQuery.of(context).size.width;
-                            return Container(
-                              height: height / 1.5,
-                              width: width / 1.5,
-                              child: Column(
-                                children: [
-                                  const Divider(
-                                    height: 10,
-                                    thickness: 0.7,
-                                    color: Color.fromARGB(255, 224, 224, 224),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      'Description:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('${message.description}'),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Row(children: [
-                                      Text("Category: ",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text("${items[message.category]}")
-                                    ]),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Spacer(),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ));
+              showExerciseDetails(context, message, items);
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) =>
+              //           ExerciseDetailsRoute(message: message, items: items),
+              //     ));
             }
             if (value == 1) {
               Navigator.push(
@@ -344,7 +288,7 @@ class _NewWorkoutState extends State<NewWorkout> {
           ),
           itemBuilder: (BuildContext context) => <PopupMenuEntry>[
             const PopupMenuItem(
-              child: Text('Watch Video'),
+              child: Text('See Details'),
               value: 0,
             ),
             const PopupMenuItem(

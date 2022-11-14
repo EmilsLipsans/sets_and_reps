@@ -3,7 +3,9 @@ import 'dart:async'; // new
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
+import 'package:gtk_flutter/pages/create_workout.dart';
 import 'package:gtk_flutter/utils/dropdown.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 
 class CreateExerciseRoute extends StatefulWidget {
@@ -180,7 +182,7 @@ class _NewExerciseState extends State<NewExercise> {
                       maxLength: 160,
                       controller: _urlController,
                       decoration: InputDecoration(
-                        labelText: 'Example Video URL',
+                        labelText: 'Youtube Video URL',
                         contentPadding: const EdgeInsets.only(
                           left: 12.0,
                           top: 20.0,
@@ -209,14 +211,9 @@ class _NewExerciseState extends State<NewExercise> {
                           _nameController.clear();
                           _urlController.clear();
                           _descriptionController.clear();
+                          Navigator.pop(context);
                           final snackBar = SnackBar(
                             content: const Text('Exercise Saved'),
-                            action: SnackBarAction(
-                              label: 'Show Exercise',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }

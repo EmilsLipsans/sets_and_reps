@@ -3,7 +3,9 @@ import 'dart:async'; // new
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
+import 'package:gtk_flutter/pages/create_workout.dart';
 import 'package:gtk_flutter/utils/dropdown.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 
 class UpdateExerciseRoute extends StatefulWidget {
@@ -219,14 +221,9 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                           _nameController.clear();
                           _urlController.clear();
                           _descriptionController.clear();
+                          Navigator.pop(context);
                           final snackBar = SnackBar(
-                            content: const Text('Exercise Saved'),
-                            action: SnackBarAction(
-                              label: 'Show Exercise',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
+                            content: const Text('Exercise Edited'),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }

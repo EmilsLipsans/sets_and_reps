@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/create_exercise.dart';
+import 'package:gtk_flutter/src/widgets.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
 import 'package:provider/provider.dart';
@@ -61,41 +62,6 @@ class NewWorkout extends StatefulWidget {
 }
 
 class _NewWorkoutState extends State<NewWorkout> {
-  Widget exerciseCards(message) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: ListTile(
-        leading: IconButton(
-          icon: Icon(
-            Icons.add_circle_rounded,
-            color: Colors.blueAccent,
-          ),
-          onPressed: () => print('select'),
-        ),
-        title: Text('${message.name}'),
-        trailing: PopupMenuButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
-            ),
-          ),
-          icon: Icon(
-            Icons.more_vert,
-          ),
-          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-            const PopupMenuItem(
-              child: Text('Edit'),
-            ),
-            PopupMenuDivider(),
-            const PopupMenuItem(
-              child: Text('Delete'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
   final _nameController = TextEditingController();
   String? selectedValue;
@@ -189,11 +155,10 @@ class _NewWorkoutState extends State<NewWorkout> {
               SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 280,
+              Expanded(
+                flex: 4,
                 child: ListView(
                   scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
                       for (var message in widget.messages)
@@ -226,7 +191,10 @@ class _NewWorkoutState extends State<NewWorkout> {
                   ],
                 ),
               ),
-              Spacer(),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(child: Paragraph('Show Added Exercises')),
               MaterialButton(
                 color: Colors.blueAccent,
                 onPressed: () async {
@@ -258,6 +226,52 @@ class _NewWorkoutState extends State<NewWorkout> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget exerciseCards(message) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: ListTile(
+        leading: IconButton(
+          icon: Icon(
+            Icons.add_circle_rounded,
+            color: Colors.blueAccent,
+          ),
+          onPressed: () => print('select'),
+        ),
+        title: Text('${message.name}'),
+        trailing: PopupMenuButton(
+          onSelected: (value) {
+            if (value == 0) {}
+            if (value == 1) {}
+            if (value == 2) {}
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+          icon: Icon(
+            Icons.more_vert,
+          ),
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            const PopupMenuItem(
+              child: Text('Watch Video'),
+              value: 0,
+            ),
+            const PopupMenuItem(
+              child: Text('Edit'),
+              value: 1,
+            ),
+            PopupMenuDivider(),
+            const PopupMenuItem(
+              child: Text('Delete'),
+              value: 2,
+            ),
+          ],
         ),
       ),
     );

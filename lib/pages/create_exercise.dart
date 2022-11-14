@@ -17,7 +17,7 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Exercise'),
+        title: const Text('Create Exercise'),
       ),
       resizeToAvoidBottomInset: true,
       body: Consumer<ApplicationState>(
@@ -49,7 +49,7 @@ class NewExercise extends StatefulWidget {
 }
 
 class _NewExerciseState extends State<NewExercise> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
+  final _formKey = GlobalKey<FormState>(debugLabel: '_NewExerciseState');
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _urlController = TextEditingController();

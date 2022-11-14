@@ -31,6 +31,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
             Expanded(
               child: NewWorkout(
                 addMessage: (message) => appState.createNewWorkout(message),
+                deleteExercise: (docID) => appState.deleteExercise(docID),
                 messages: appState.exreciseList,
               ),
             ),
@@ -59,9 +60,11 @@ class NewWorkout extends StatefulWidget {
   const NewWorkout({
     super.key,
     required this.addMessage,
+    required this.deleteExercise,
     required this.messages,
   });
   final FutureOr<void> Function(String message) addMessage;
+  final FutureOr<void> Function(String docID) deleteExercise;
   final List<Exrecises> messages;
 
   @override
@@ -252,7 +255,73 @@ class _NewWorkoutState extends State<NewWorkout> {
         title: Text('${message.name}'),
         trailing: PopupMenuButton(
           onSelected: (value) {
-            if (value == 0) {}
+            if (value == 0) {
+              showDialog(
+                  context: context,
+                  builder: (_) => new AlertDialog(
+                        title: Center(
+                          child: Text('${message.name}'),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(18.0))),
+                        content: Builder(
+                          builder: (context) {
+                            // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                            var height = MediaQuery.of(context).size.height;
+                            var width = MediaQuery.of(context).size.width;
+                            return Container(
+                              height: height / 1.5,
+                              width: width / 1.5,
+                              child: Column(
+                                children: [
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 0.7,
+                                    color: Color.fromARGB(255, 224, 224, 224),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Description:',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text('${message.description}'),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Row(children: [
+                                      Text("Category: ",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Text("${items[message.category]}")
+                                    ]),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Spacer(),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ));
+            }
             if (value == 1) {
               Navigator.push(
                 context,
@@ -261,7 +330,9 @@ class _NewWorkoutState extends State<NewWorkout> {
                         UpdateExerciseRoute(message: message)),
               );
             }
-            if (value == 2) {}
+            if (value == 2) {
+              widget.deleteExercise(message.docID);
+            }
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(

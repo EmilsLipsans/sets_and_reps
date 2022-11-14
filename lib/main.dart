@@ -288,4 +288,14 @@ class ApplicationState extends ChangeNotifier {
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
+
+  Future<void> deleteExercise(String docID) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    return FirebaseFirestore.instance
+        .collection('exerices')
+        .doc('$docID')
+        .delete();
+  }
 }

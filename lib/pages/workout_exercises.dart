@@ -4,8 +4,10 @@ import 'package:gtk_flutter/utils/exercise_list.dart';
 
 class ExerciseListRoute extends StatefulWidget {
   @override
-  ExerciseListRoute({super.key, required this.list});
+  ExerciseListRoute(
+      {super.key, required this.list, required this.incrementCounter});
   final list;
+  final ValueChanged<int> incrementCounter;
   _ExerciseListRouteState createState() => _ExerciseListRouteState();
 }
 
@@ -60,6 +62,7 @@ class _ExerciseListRouteState extends State<ExerciseListRoute> {
                   onPressed: () {
                     remove(index);
                     setState(() {
+                      widget.incrementCounter(exercises.length);
                       if (exercises.length == 0) listEmpty = true;
                     });
                   }),

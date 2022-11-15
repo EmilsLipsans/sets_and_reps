@@ -78,13 +78,12 @@ class _NewWorkoutState extends State<NewWorkout> {
   final _nameController = TextEditingController();
   String? selectedValue;
   int exercisesAdded = 0;
-  void _incrementCounter() {
+  List<ExerciseList> list = [];
+  void _incrementCounter(int count) {
     setState(() {
-      exercisesAdded++;
+      exercisesAdded = count;
     });
   }
-
-  List<ExerciseList> list = [];
 
   static const List<String> items = [
     'All',
@@ -217,32 +216,36 @@ class _NewWorkoutState extends State<NewWorkout> {
               ),
               Row(
                 children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Exercises Added: ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Exercises Added: ',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
-                  Expanded(
-                    child: ElevatedButton(
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: MaterialButton(
+                      color: Colors.blueAccent,
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => ExerciseListRoute(
                                     list: list,
+                                    incrementCounter: _incrementCounter,
                                   )),
                         );
                       },
-                      child: Text('$exercisesAdded'),
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        padding: EdgeInsets.all(24),
+                      height: 40,
+                      minWidth: 40,
+                      child: Text(
+                        '$exercisesAdded',
+                        style: TextStyle(color: Colors.white),
                       ),
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(2),
                     ),
                   ),
                 ],
@@ -295,9 +298,9 @@ class _NewWorkoutState extends State<NewWorkout> {
             ),
             onPressed: () {
               if (exercisesAdded < 10) {
-                _incrementCounter();
                 list.add(
                     ExerciseList(name: message.name, docID: message.docID));
+                _incrementCounter(list.length);
               } else {
                 final snackBar = SnackBar(
                   content: const Text('Exercise List Full'),

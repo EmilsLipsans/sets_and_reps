@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gtk_flutter/pages/create_workout.dart';
+import 'package:gtk_flutter/pages/workout_create.dart';
 
 class WorkoutsPage extends StatefulWidget {
   const WorkoutsPage({super.key});

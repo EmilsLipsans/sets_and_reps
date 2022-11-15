@@ -3,9 +3,7 @@ import 'dart:async'; // new
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/pages/create_workout.dart';
 import 'package:gtk_flutter/utils/dropdown.dart';
-import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 
 class CreateExerciseRoute extends StatefulWidget {

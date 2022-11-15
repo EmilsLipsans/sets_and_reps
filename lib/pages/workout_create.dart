@@ -3,12 +3,12 @@ import 'dart:async'; // new
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/pages/create_exercise.dart';
-import 'package:gtk_flutter/pages/exercise_details.dart';
-import 'package:gtk_flutter/pages/update_exercise.dart';
-import 'package:gtk_flutter/src/widgets.dart';
+import 'package:gtk_flutter/pages/exercise_create.dart';
+import 'package:gtk_flutter/pages/exercise_update.dart';
+import 'package:gtk_flutter/pages/workout_exercises.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
+import 'package:gtk_flutter/utils/exercise_list.dart';
 import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 // new
@@ -77,6 +77,15 @@ class _NewWorkoutState extends State<NewWorkout> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
   final _nameController = TextEditingController();
   String? selectedValue;
+  int exercisesAdded = 0;
+  void _incrementCounter() {
+    setState(() {
+      exercisesAdded++;
+    });
+  }
+
+  List<ExerciseList> list = [];
+
   static const List<String> items = [
     'All',
     'Abs',
@@ -168,7 +177,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                 height: 20,
               ),
               Expanded(
-                flex: 4,
+                flex: 5,
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
@@ -206,7 +215,39 @@ class _NewWorkoutState extends State<NewWorkout> {
               SizedBox(
                 height: 20,
               ),
-              Expanded(child: Paragraph('Show Added Exercises')),
+              Row(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Exercises Added: ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ExerciseListRoute(
+                                    list: list,
+                                  )),
+                        );
+                      },
+                      child: Text('$exercisesAdded'),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Spacer(),
               MaterialButton(
                 color: Colors.blueAccent,
                 onPressed: () async {
@@ -248,12 +289,22 @@ class _NewWorkoutState extends State<NewWorkout> {
       clipBehavior: Clip.hardEdge,
       child: ListTile(
         leading: IconButton(
-          icon: Icon(
-            Icons.add_circle_rounded,
-            color: Colors.blueAccent,
-          ),
-          onPressed: () => print('select'),
-        ),
+            icon: Icon(
+              Icons.add_circle_rounded,
+              color: Colors.blueAccent,
+            ),
+            onPressed: () {
+              if (exercisesAdded < 10) {
+                _incrementCounter();
+                list.add(
+                    ExerciseList(name: message.name, docID: message.docID));
+              } else {
+                final snackBar = SnackBar(
+                  content: const Text('Exercise List Full'),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }),
         title: Text('${message.name}'),
         trailing: PopupMenuButton(
           onSelected: (value) {

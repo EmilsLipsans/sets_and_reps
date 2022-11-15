@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gtk_flutter/pages/create_exercise.dart';
-import 'package:gtk_flutter/pages/start_workout.dart';
+import 'package:gtk_flutter/pages/exercise_create.dart';
+import 'package:gtk_flutter/pages/workout_start.dart';
 
 class HomePage extends StatelessWidget {
   // This widget is the root of your application.

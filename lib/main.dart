@@ -8,7 +8,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gtk_flutter/pages/calander.dart';
-import 'package:gtk_flutter/pages/create_workout.dart';
+import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';

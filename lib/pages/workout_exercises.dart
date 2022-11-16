@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/src/widgets.dart';
-import 'package:gtk_flutter/utils/exercise_list.dart';
+import 'package:gtk_flutter/utils/workout_exercises.dart';
 
-class ExerciseListRoute extends StatefulWidget {
+class WorkoutExercisesRoute extends StatefulWidget {
   @override
-  ExerciseListRoute(
+  WorkoutExercisesRoute(
       {super.key, required this.list, required this.incrementCounter});
   final list;
   final ValueChanged<int> incrementCounter;
-  _ExerciseListRouteState createState() => _ExerciseListRouteState();
+  _WorkoutExercisesRouteState createState() => _WorkoutExercisesRouteState();
 }
 
-class _ExerciseListRouteState extends State<ExerciseListRoute> {
-  List<ExerciseList> exercises = [];
+class _WorkoutExercisesRouteState extends State<WorkoutExercisesRoute> {
+  List<WorkoutExercises> exercises = [];
   bool listEmpty = false;
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ExerciseListRouteState extends State<ExerciseListRoute> {
               ),
       );
 
-  Widget buildExercise(int index, ExerciseList exercise) => Card(
+  Widget buildExercise(int index, WorkoutExercises exercise) => Card(
         key: ValueKey(exercise),
         clipBehavior: Clip.hardEdge,
         child: ListTile(

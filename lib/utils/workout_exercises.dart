@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ExerciseList {
+class WorkoutExercises {
   String name;
-  String docID;
+  final docID;
 
-  ExerciseList({
+  WorkoutExercises({
     required this.name,
     required this.docID,
   });

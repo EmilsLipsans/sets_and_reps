@@ -12,6 +12,7 @@ import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
+import 'package:gtk_flutter/utils/workout_exercises.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -219,7 +220,7 @@ class ApplicationState extends ChangeNotifier {
                 docID: document.id,
                 name: document.data()['name'] as String,
                 description: document.data()['description'] as String,
-                message: document.data()['url'] as String,
+                url: document.data()['url'] as String,
                 category: document.data()['category'] as int,
               ),
             );
@@ -235,7 +236,7 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<DocumentReference> createNewWorkout(String message) {
+  Future<DocumentReference> createNewWorkout(String workout, List listOfIDs) {
     if (!_loggedIn) {
       throw Exception('Must be logged in');
     }
@@ -243,9 +244,10 @@ class ApplicationState extends ChangeNotifier {
     return FirebaseFirestore.instance
         .collection('workouts')
         .add(<String, dynamic>{
-      'text': message,
+      'name': workout,
+      'exerciseRef': listOfIDs,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName,
+      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }

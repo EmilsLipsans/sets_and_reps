@@ -1,5 +1,6 @@
 import 'dart:async'; // new
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
@@ -8,7 +9,7 @@ import 'package:gtk_flutter/pages/exercise_update.dart';
 import 'package:gtk_flutter/pages/workout_exercises.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
-import 'package:gtk_flutter/utils/exercise_list.dart';
+import 'package:gtk_flutter/utils/workout_exercises.dart';
 import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 // new
@@ -32,9 +33,10 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
           children: [
             Expanded(
               child: NewWorkout(
-                addMessage: (message) => appState.createNewWorkout(message),
+                addworkout: (workout, listOfIDs) =>
+                    appState.createNewWorkout(workout, listOfIDs),
                 deleteExercise: (docID) => appState.deleteExercise(docID),
-                messages: appState.exreciseList,
+                workouts: appState.exreciseList,
               ),
             ),
           ],
@@ -48,12 +50,12 @@ class Exrecises {
   Exrecises(
       {required this.docID,
       required this.name,
-      required this.message,
+      required this.url,
       required this.description,
       required this.category});
-  final String docID;
+  final docID;
   final String name;
-  final String message;
+  final String url;
   final String description;
   final int category;
 }
@@ -61,13 +63,14 @@ class Exrecises {
 class NewWorkout extends StatefulWidget {
   const NewWorkout({
     super.key,
-    required this.addMessage,
+    required this.addworkout,
     required this.deleteExercise,
-    required this.messages,
+    required this.workouts,
   });
-  final FutureOr<void> Function(String message) addMessage;
+
+  final FutureOr<void> Function(String workout, List list) addworkout;
   final FutureOr<void> Function(String docID) deleteExercise;
-  final List<Exrecises> messages;
+  final List<Exrecises> workouts;
 
   @override
   State<NewWorkout> createState() => _NewWorkoutState();
@@ -78,7 +81,7 @@ class _NewWorkoutState extends State<NewWorkout> {
   final _nameController = TextEditingController();
   String? selectedValue;
   int exercisesAdded = 0;
-  List<ExerciseList> list = [];
+  List<WorkoutExercises> list = [];
   void _incrementCounter(int count) {
     setState(() {
       exercisesAdded = count;
@@ -181,13 +184,13 @@ class _NewWorkoutState extends State<NewWorkout> {
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
-                      for (var message in widget.messages)
-                        exerciseCards(message),
+                      for (var workout in widget.workouts)
+                        exerciseCards(workout),
                     ] else
-                      for (var message in widget.messages)
-                        if (message.category ==
+                      for (var workout in widget.workouts)
+                        if (workout.category ==
                             filterByItemPos(selectedValue as String, items))
-                          exerciseCards(message),
+                          exerciseCards(workout),
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
@@ -232,7 +235,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ExerciseListRoute(
+                              builder: (context) => WorkoutExercisesRoute(
                                     list: list,
                                     incrementCounter: _incrementCounter,
                                   )),
@@ -255,10 +258,15 @@ class _NewWorkoutState extends State<NewWorkout> {
                 color: Colors.blueAccent,
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    await widget.addMessage(
-                      _nameController.text,
-                    );
+                    List listOfIDs = [];
+                    list.forEach((name) {
+                      listOfIDs.add('exercises/' + name.docID);
+                    });
+
+                    await widget.addworkout(_nameController.text, listOfIDs);
                     _nameController.clear();
+                    list.clear();
+                    _incrementCounter(list.length);
                     final snackBar = SnackBar(
                       content: const Text('Workout Saved'),
                       action: SnackBarAction(
@@ -287,7 +295,7 @@ class _NewWorkoutState extends State<NewWorkout> {
     );
   }
 
-  Widget exerciseCards(message) {
+  Widget exerciseCards(workout) {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: ListTile(
@@ -299,7 +307,7 @@ class _NewWorkoutState extends State<NewWorkout> {
             onPressed: () {
               if (exercisesAdded < 10) {
                 list.add(
-                    ExerciseList(name: message.name, docID: message.docID));
+                    WorkoutExercises(name: workout.name, docID: workout.docID));
                 _incrementCounter(list.length);
               } else {
                 final snackBar = SnackBar(
@@ -308,16 +316,16 @@ class _NewWorkoutState extends State<NewWorkout> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             }),
-        title: Text('${message.name}'),
+        title: Text('${workout.name}'),
         trailing: PopupMenuButton(
           onSelected: (value) {
             if (value == 0) {
-              showExerciseDetails(context, message, items);
+              showExerciseDetails(context, workout, items);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(
               //       builder: (context) =>
-              //           ExerciseDetailsRoute(message: message, items: items),
+              //           ExerciseDetailsRoute(workout: workout, items: items),
               //     ));
             }
             if (value == 1) {
@@ -325,11 +333,11 @@ class _NewWorkoutState extends State<NewWorkout> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        UpdateExerciseRoute(message: message)),
+                        UpdateExerciseRoute(workout: workout)),
               );
             }
             if (value == 2) {
-              widget.deleteExercise(message.docID);
+              widget.deleteExercise(workout.docID);
             }
           },
           shape: RoundedRectangleBorder(

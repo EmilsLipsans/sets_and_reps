@@ -7,9 +7,9 @@ import 'package:gtk_flutter/utils/dropdown.dart';
 import 'package:provider/provider.dart';
 
 class UpdateExerciseRoute extends StatefulWidget {
-  UpdateExerciseRoute({super.key, required this.message});
+  UpdateExerciseRoute({super.key, required this.workout});
   @override
-  final message;
+  final workout;
   State<UpdateExerciseRoute> createState() => UpdateExerciseRouteState();
 }
 
@@ -29,7 +29,7 @@ class UpdateExerciseRouteState extends State<UpdateExerciseRoute> {
                 updateExercise: (name, description, url, category, docID) =>
                     appState.updateExercise(
                         name, description, url, category, docID),
-                message: widget.message,
+                workout: widget.workout,
               ),
             ),
           ],
@@ -43,11 +43,11 @@ class UpdateExercise extends StatefulWidget {
   const UpdateExercise({
     super.key,
     required this.updateExercise,
-    required this.message,
+    required this.workout,
   });
   final FutureOr<void> Function(String name, String description, String url,
       int category, String docID) updateExercise;
-  final message;
+  final workout;
 
   @override
   State<UpdateExercise> createState() => _UpdateExerciseState();
@@ -91,7 +91,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 40,
                       controller: _nameController
-                        ..text = '${widget.message.name}',
+                        ..text = '${widget.workout.name}',
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Exercise Name',
@@ -136,7 +136,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                       ),
                       items: addDividersAfterItems(items),
                       customItemsHeights: getCustomItemsHeights(items),
-                      value: selectedValue = items[widget.message.category - 1],
+                      value: selectedValue = items[widget.workout.category - 1],
                       validator: (value) {
                         if (value == null) {
                           return 'Select Exercise Category';
@@ -162,7 +162,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 255,
                       controller: _descriptionController
-                        ..text = '${widget.message.description}',
+                        ..text = '${widget.workout.description}',
                       decoration: InputDecoration(
                         labelText: 'Exercise Description',
                         contentPadding: const EdgeInsets.only(
@@ -186,7 +186,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 160,
                       controller: _urlController
-                        ..text = '${widget.message.message}',
+                        ..text = '${widget.workout.workout}',
                       decoration: InputDecoration(
                         labelText: 'Example Video URL',
                         contentPadding: const EdgeInsets.only(
@@ -214,7 +214,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                             _descriptionController.text,
                             _urlController.text,
                             getItemPos(selectedValue as String, items),
-                            widget.message.docID,
+                            widget.workout.docID,
                           );
                           _nameController.clear();
                           _urlController.clear();

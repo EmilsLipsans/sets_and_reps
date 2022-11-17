@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class UpdateExerciseRoute extends StatefulWidget {
   UpdateExerciseRoute({super.key, required this.workout});
-  @override
+
   final workout;
   State<UpdateExerciseRoute> createState() => UpdateExerciseRouteState();
 }
@@ -186,7 +186,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 160,
                       controller: _urlController
-                        ..text = '${widget.workout.workout}',
+                        ..text = '${widget.workout.url}',
                       decoration: InputDecoration(
                         labelText: 'Example Video URL',
                         contentPadding: const EdgeInsets.only(

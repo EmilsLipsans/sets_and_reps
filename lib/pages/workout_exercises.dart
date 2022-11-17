@@ -28,7 +28,7 @@ class _WorkoutExercisesRouteState extends State<WorkoutExercisesRoute> {
           title: Text("Exercise List"),
         ),
         body: listEmpty
-            ? buildSingleCard()
+            ? noList()
             : ReorderableListView.builder(
                 itemCount: exercises.length,
                 onReorder: (oldIndex, newIndex) => setState(() {
@@ -70,7 +70,7 @@ class _WorkoutExercisesRouteState extends State<WorkoutExercisesRoute> {
           ),
         ),
       );
-  Widget buildSingleCard() {
+  Widget noList() {
     return Center(
       child: Paragraph('No Exercises Added'),
     );

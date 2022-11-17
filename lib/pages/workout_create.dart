@@ -1,6 +1,5 @@
 import 'dart:async'; // new
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gtk_flutter/main.dart';
@@ -33,10 +32,10 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
           children: [
             Expanded(
               child: NewWorkout(
-                addworkout: (workout, listOfIDs) =>
-                    appState.createNewWorkout(workout, listOfIDs),
+                addworkout: (newWorkout, listOfIDs) =>
+                    appState.createNewWorkout(newWorkout, listOfIDs),
                 deleteExercise: (docID) => appState.deleteExercise(docID),
-                workouts: appState.exreciseList,
+                workoutExercises: appState.exreciseList,
               ),
             ),
           ],
@@ -53,7 +52,7 @@ class Exrecises {
       required this.url,
       required this.description,
       required this.category});
-  final docID;
+  final String docID;
   final String name;
   final String url;
   final String description;
@@ -65,12 +64,12 @@ class NewWorkout extends StatefulWidget {
     super.key,
     required this.addworkout,
     required this.deleteExercise,
-    required this.workouts,
+    required this.workoutExercises,
   });
 
-  final FutureOr<void> Function(String workout, List list) addworkout;
+  final FutureOr<void> Function(String newWorkout, List list) addworkout;
   final FutureOr<void> Function(String docID) deleteExercise;
-  final List<Exrecises> workouts;
+  final List<Exrecises> workoutExercises;
 
   @override
   State<NewWorkout> createState() => _NewWorkoutState();
@@ -184,13 +183,13 @@ class _NewWorkoutState extends State<NewWorkout> {
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
-                      for (var workout in widget.workouts)
-                        exerciseCards(workout),
+                      for (var newWorkout in widget.workoutExercises)
+                        exerciseCards(newWorkout),
                     ] else
-                      for (var workout in widget.workouts)
-                        if (workout.category ==
+                      for (var newWorkout in widget.workoutExercises)
+                        if (newWorkout.category ==
                             filterByItemPos(selectedValue as String, items))
-                          exerciseCards(workout),
+                          exerciseCards(newWorkout),
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
@@ -295,7 +294,7 @@ class _NewWorkoutState extends State<NewWorkout> {
     );
   }
 
-  Widget exerciseCards(workout) {
+  Widget exerciseCards(newWorkout) {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: ListTile(
@@ -306,8 +305,8 @@ class _NewWorkoutState extends State<NewWorkout> {
             ),
             onPressed: () {
               if (exercisesAdded < 10) {
-                list.add(
-                    WorkoutExercises(name: workout.name, docID: workout.docID));
+                list.add(WorkoutExercises(
+                    name: newWorkout.name, docID: newWorkout.docID));
                 _incrementCounter(list.length);
               } else {
                 final snackBar = SnackBar(
@@ -316,11 +315,11 @@ class _NewWorkoutState extends State<NewWorkout> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             }),
-        title: Text('${workout.name}'),
+        title: Text('${newWorkout.name}'),
         trailing: PopupMenuButton(
           onSelected: (value) {
             if (value == 0) {
-              showExerciseDetails(context, workout, items);
+              showExerciseDetails(context, newWorkout, items);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(
@@ -333,11 +332,11 @@ class _NewWorkoutState extends State<NewWorkout> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        UpdateExerciseRoute(workout: workout)),
+                        UpdateExerciseRoute(workout: newWorkout)),
               );
             }
             if (value == 2) {
-              widget.deleteExercise(workout.docID);
+              widget.deleteExercise(newWorkout.docID);
             }
           },
           shape: RoundedRectangleBorder(

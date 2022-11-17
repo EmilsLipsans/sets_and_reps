@@ -50,3 +50,17 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+String capitalize(String value) {
+  var result = value[0].toUpperCase();
+  bool cap = true;
+  for (int i = 1; i < value.length; i++) {
+    if (value[i - 1] == " " && cap == true) {
+      result = result + value[i].toUpperCase();
+    } else {
+      result = result + value[i];
+      cap = false;
+    }
+  }
+  return result;
+}

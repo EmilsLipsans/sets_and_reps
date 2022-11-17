@@ -12,7 +12,6 @@ import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
-import 'package:gtk_flutter/utils/workout_exercises.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -197,6 +196,10 @@ class ApplicationState extends ChangeNotifier {
   List<Exrecises> _exreciseList = [];
   List<Exrecises> get exreciseList => _exreciseList;
 
+  StreamSubscription<QuerySnapshot>? _workoutListSubscription;
+  List<Workout> _workoutList = [];
+  List<Workout> get workoutList => _workoutList;
+
   Future<void> init() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
@@ -208,6 +211,7 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
+        loadWorkouts();
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
             .orderBy('timestamp', descending: true)
@@ -230,9 +234,44 @@ class ApplicationState extends ChangeNotifier {
       } else {
         _loggedIn = false;
         _exreciseList = [];
+        _workoutList = [];
         _exreciseListSubscription?.cancel();
+        _workoutListSubscription?.cancel();
       }
       notifyListeners();
+    });
+  }
+
+  loadWorkouts() {
+    _workoutListSubscription = FirebaseFirestore.instance
+        .collection('workouts')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      _workoutList = [];
+      for (final document in snapshot.docs) {
+        _workoutList.add(
+          Workout(
+            docID: document.id,
+            exerciseRef: document.data()['exerciseRef'] as List,
+            name: document.data()['name'] as String,
+            favorite: document.data()['favorite'] as bool,
+          ),
+        );
+      }
+      notifyListeners();
+    });
+  }
+
+  Future<void> favoriteWorkout(String docID, bool favorite) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    return FirebaseFirestore.instance
+        .collection('workouts')
+        .doc('$docID')
+        .update({
+      'favorite': favorite,
     });
   }
 
@@ -246,10 +285,21 @@ class ApplicationState extends ChangeNotifier {
         .add(<String, dynamic>{
       'name': workout,
       'exerciseRef': listOfIDs,
+      'favorite': false,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
+  }
+
+  Future<void> deleteWorkout(String docID) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    return FirebaseFirestore.instance
+        .collection('workouts')
+        .doc('$docID')
+        .delete();
   }
 
   Future<DocumentReference> createNewExercise(

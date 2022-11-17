@@ -135,12 +135,7 @@ class _WorkoutState extends State<WorkoutPage> {
             ),
             Expanded(
               flex: 9,
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  for (var workout in widget.workouts) exerciseCards(workout)
-                ],
-              ),
+              child: exerciseCardList(widget.workouts),
             ),
             Spacer(),
           ],
@@ -149,65 +144,72 @@ class _WorkoutState extends State<WorkoutPage> {
     );
   }
 
-  Widget exerciseCards(workout) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: ListTile(
-        tileColor: workout.favorite
-            ? Color.fromARGB(255, 244, 255, 143)
-            : Color.fromARGB(255, 255, 255, 255),
-        leading: StarButton(
-          iconSize: 36.0,
-          isStarred: workout.favorite,
-          // iconDisabledColor: Colors.white,
-          valueChanged: (_isStarred) {
-            widget.favoriteWorkout(workout.docID, _isStarred);
-            print('Is Starred : $_isStarred');
-          },
-        ),
-        title: Text('${workout.name}'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.upload_rounded,
-                  color: Colors.blueAccent,
-                ),
-                onPressed: () {}),
-            PopupMenuButton(
-              onSelected: (value) {
-                if (value == 2) {
-                  widget.deleteWorkout(workout.docID);
-                }
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8.0),
-                ),
+  Widget exerciseCardList(workouts) {
+    return ListView(
+      scrollDirection: Axis.vertical,
+      children: <Widget>[
+        for (var workout in widget.workouts)
+          Card(
+            clipBehavior: Clip.hardEdge,
+            child: ListTile(
+              tileColor: Color.fromARGB(255, 255, 255, 255),
+              leading: IconButton(
+                  padding: const EdgeInsets.all(0),
+                  alignment: Alignment.center,
+                  icon: (workout.favorite
+                      ? const Icon(Icons.star)
+                      : const Icon(Icons.star_border)),
+                  color: workout.favorite ? Colors.yellow : Colors.grey,
+                  onPressed: () {
+                    workout.favorite
+                        ? widget.favoriteWorkout(workout.docID, false)
+                        : widget.favoriteWorkout(workout.docID, true);
+                  }),
+              title: Text('${workout.name}'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.upload_rounded,
+                        color: Colors.blueAccent,
+                      ),
+                      onPressed: () {}),
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      if (value == 2) {
+                        widget.deleteWorkout(workout.docID);
+                      }
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
+                    ),
+                    icon: Icon(
+                      Icons.more_vert,
+                    ),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                      const PopupMenuItem(
+                        child: Text('See Details'),
+                        value: 0,
+                      ),
+                      const PopupMenuItem(
+                        child: Text('Edit'),
+                        value: 1,
+                      ),
+                      PopupMenuDivider(),
+                      const PopupMenuItem(
+                        child: Text('Delete'),
+                        value: 2,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              icon: Icon(
-                Icons.more_vert,
-              ),
-              itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                const PopupMenuItem(
-                  child: Text('See Details'),
-                  value: 0,
-                ),
-                const PopupMenuItem(
-                  child: Text('Edit'),
-                  value: 1,
-                ),
-                PopupMenuDivider(),
-                const PopupMenuItem(
-                  child: Text('Delete'),
-                  value: 2,
-                ),
-              ],
             ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 }

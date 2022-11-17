@@ -197,6 +197,7 @@ class ApplicationState extends ChangeNotifier {
   List<Exrecises> get exreciseList => _exreciseList;
 
   StreamSubscription<QuerySnapshot>? _workoutListSubscription;
+  StreamSubscription<QuerySnapshot>? _workoutFavoriteListSubscription;
   List<Workout> _workoutList = [];
   List<Workout> get workoutList => _workoutList;
 
@@ -211,6 +212,7 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
+
         loadWorkouts();
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
@@ -237,6 +239,7 @@ class ApplicationState extends ChangeNotifier {
         _workoutList = [];
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
+        _workoutFavoriteListSubscription?.cancel();
       }
       notifyListeners();
     });
@@ -245,6 +248,7 @@ class ApplicationState extends ChangeNotifier {
   loadWorkouts() {
     _workoutListSubscription = FirebaseFirestore.instance
         .collection('workouts')
+        .orderBy("favorite", descending: true)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {

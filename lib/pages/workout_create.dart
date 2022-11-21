@@ -14,8 +14,18 @@ import 'package:provider/provider.dart';
 // new
 
 class CreateWorkoutRoute extends StatefulWidget {
-  const CreateWorkoutRoute({super.key});
-  @override
+  const CreateWorkoutRoute(
+      {super.key,
+      required this.workoutExercises,
+      required this.actionName,
+      required this.workoutName,
+      required this.createNewWorkout,
+      required this.workoutID});
+  final List<String> workoutExercises;
+  final actionName;
+  final workoutName;
+  final bool createNewWorkout;
+  final workoutID;
   State<CreateWorkoutRoute> createState() => CreateWorkoutRouteState();
 }
 
@@ -24,7 +34,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Workout'),
+        title: Text(widget.actionName),
       ),
       resizeToAvoidBottomInset: false,
       body: Consumer<ApplicationState>(
@@ -35,7 +45,13 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
                 addworkout: (newWorkout, listOfIDs) =>
                     appState.createNewWorkout(newWorkout, listOfIDs),
                 deleteExercise: (docID) => appState.deleteExercise(docID),
-                workoutExercises: appState.exreciseList,
+                updateWorkout: (workoutName, list, docID) =>
+                    appState.updateWorkout(workoutName, list, docID),
+                exercises: appState.exreciseList,
+                workoutExercises: widget.workoutExercises,
+                workoutname: widget.workoutName,
+                createNewWorkout: widget.createNewWorkout,
+                workoutID: widget.workoutID,
               ),
             ),
           ],
@@ -64,27 +80,54 @@ class NewWorkout extends StatefulWidget {
     super.key,
     required this.addworkout,
     required this.deleteExercise,
+    required this.updateWorkout,
+    required this.exercises,
     required this.workoutExercises,
+    required this.workoutname,
+    required this.createNewWorkout,
+    required this.workoutID,
   });
 
   final FutureOr<void> Function(String newWorkout, List list) addworkout;
   final FutureOr<void> Function(String docID) deleteExercise;
-  final List<Exrecises> workoutExercises;
+  final FutureOr<void> Function(String workoutName, List list, String docID)
+      updateWorkout;
+  final List<Exrecises> exercises;
+  final List<String> workoutExercises;
+  final workoutname;
+  final bool createNewWorkout;
+  final workoutID;
 
   @override
   State<NewWorkout> createState() => _NewWorkoutState();
 }
 
 class _NewWorkoutState extends State<NewWorkout> {
+  void initState() {
+    super.initState();
+    updateList(list);
+  }
+
   final _formKey = GlobalKey<FormState>(debugLabel: '_NewWorkoutState');
-  final _nameController = TextEditingController();
+  late final _nameController = TextEditingController(text: widget.workoutname);
   String? selectedValue;
-  int exercisesAdded = 0;
+  late int exercisesAdded = list.length;
   List<WorkoutExercises> list = [];
   void _incrementCounter(int count) {
     setState(() {
       exercisesAdded = count;
     });
+  }
+
+  List<WorkoutExercises> updateList(List<WorkoutExercises> list) {
+    for (var count = 0; count < widget.workoutExercises.length; count++)
+      for (var value in widget.exercises) {
+        if (value.docID == widget.workoutExercises[count])
+          list.add(WorkoutExercises(name: value.name, docID: value.docID));
+        _incrementCounter(list.length);
+      }
+
+    return list;
   }
 
   static const List<String> items = [
@@ -183,10 +226,10 @@ class _NewWorkoutState extends State<NewWorkout> {
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
-                      for (var newWorkout in widget.workoutExercises)
+                      for (var newWorkout in widget.exercises)
                         exerciseCards(newWorkout),
                     ] else
-                      for (var newWorkout in widget.workoutExercises)
+                      for (var newWorkout in widget.exercises)
                         if (newWorkout.category ==
                             filterByItemPos(selectedValue as String, items))
                           exerciseCards(newWorkout),
@@ -259,15 +302,21 @@ class _NewWorkoutState extends State<NewWorkout> {
                   if (_formKey.currentState!.validate()) {
                     List listOfIDs = [];
                     list.forEach((name) {
-                      listOfIDs.add('exercises/' + name.docID);
+                      listOfIDs.add(name.docID);
                     });
-
-                    await widget.addworkout(_nameController.text, listOfIDs);
+                    widget.createNewWorkout
+                        ? await widget.addworkout(
+                            _nameController.text, listOfIDs)
+                        : await widget.updateWorkout(
+                            _nameController.text, listOfIDs, widget.workoutID);
                     _nameController.clear();
                     list.clear();
                     _incrementCounter(list.length);
+                    if (!widget.createNewWorkout) Navigator.pop(context);
                     final snackBar = SnackBar(
-                      content: const Text('Workout Saved'),
+                      content: widget.createNewWorkout
+                          ? Text('Workout Saved')
+                          : Text('Workout Update Saved'),
                       action: SnackBarAction(
                         label: 'Show Workout',
                         onPressed: () {

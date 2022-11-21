@@ -257,7 +257,8 @@ class ApplicationState extends ChangeNotifier {
         _workoutList.add(
           Workout(
             docID: document.id,
-            exerciseRef: document.data()['exerciseRef'] as List,
+            exerciseRef:
+                document.data()['exerciseRef'].cast<String>() as List<String>,
             name: document.data()['name'] as String,
             favorite: document.data()['favorite'] as bool,
           ),
@@ -304,6 +305,23 @@ class ApplicationState extends ChangeNotifier {
         .collection('workouts')
         .doc('$docID')
         .delete();
+  }
+
+  Future<void> updateWorkout(String workout, List listOfIDs, String docID) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('workouts')
+        .doc('$docID')
+        .update({
+      'name': workout,
+      'exerciseRef': listOfIDs,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'username': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
   }
 
   Future<DocumentReference> createNewExercise(

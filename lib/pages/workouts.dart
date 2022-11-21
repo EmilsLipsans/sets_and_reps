@@ -76,7 +76,13 @@ class _MyTabbedPageState extends State<WorkoutsPage>
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const CreateWorkoutRoute()),
+                  builder: (context) => const CreateWorkoutRoute(
+                        workoutExercises: [],
+                        actionName: 'Add Workout',
+                        workoutName: null,
+                        createNewWorkout: true,
+                        workoutID: null,
+                      )),
             );
           },
           tooltip: 'Create WorkoutPage',
@@ -98,7 +104,7 @@ class Workout {
       required this.name,
       required this.docID,
       required this.favorite});
-  final List exerciseRef;
+  final List<String> exerciseRef;
   final String name;
   final String docID;
   final bool favorite;
@@ -123,16 +129,9 @@ class _WorkoutState extends State<WorkoutPage> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 40.0, bottom: 40.0, left: 20.0, right: 20.0),
+            top: 20.0, bottom: 30.0, left: 20.0, right: 20.0),
         child: Column(
           children: [
-            Expanded(
-              child: Text(
-                'Saved Wourkouts',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
             Expanded(
               flex: 9,
               child: exerciseCardList(widget.workouts),
@@ -177,6 +176,19 @@ class _WorkoutState extends State<WorkoutPage> {
                       onPressed: () {}),
                   PopupMenuButton(
                     onSelected: (value) {
+                      if (value == 1) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateWorkoutRoute(
+                                    workoutExercises: workout.exerciseRef,
+                                    actionName: 'Edit Workout',
+                                    workoutName: workout.name,
+                                    createNewWorkout: false,
+                                    workoutID: workout.docID,
+                                  )),
+                        );
+                      }
                       if (value == 2) {
                         widget.deleteWorkout(workout.docID);
                       }

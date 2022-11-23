@@ -39,7 +39,7 @@ class StartWorkoutPage extends StatefulWidget {
 }
 
 class _StartWorkoutPageState extends State<StartWorkoutPage> {
-  String? checkedWorkout;
+  Workout? checkedWorkout;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -63,7 +63,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => StartWorkoutDetailsRoute(
-                                  workoutID: checkedWorkout,
+                                  workout: checkedWorkout,
                                 )),
                       );
                     },
@@ -97,7 +97,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                 : null,
             child: RadioListTile(
               tileColor: Color.fromARGB(255, 255, 255, 255),
-              value: workout.docID,
+              value: workout,
               groupValue: checkedWorkout,
               onChanged: (value) {
                 setState(() {

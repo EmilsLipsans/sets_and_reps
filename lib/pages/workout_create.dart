@@ -125,6 +125,7 @@ class _NewWorkoutState extends State<NewWorkout> {
         if (value.docID == widget.workoutExercises[count])
           list.add(WorkoutExercises(name: value.name, docID: value.docID));
         _incrementCounter(list.length);
+        continue;
       }
 
     return list;
@@ -298,35 +299,42 @@ class _NewWorkoutState extends State<NewWorkout> {
               Spacer(),
               MaterialButton(
                 color: Colors.blueAccent,
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    List listOfIDs = [];
-                    list.forEach((name) {
-                      listOfIDs.add(name.docID);
-                    });
-                    widget.createNewWorkout
-                        ? await widget.addworkout(
-                            _nameController.text, listOfIDs)
-                        : await widget.updateWorkout(
-                            _nameController.text, listOfIDs, widget.workoutID);
-                    _nameController.clear();
-                    list.clear();
-                    _incrementCounter(list.length);
-                    if (!widget.createNewWorkout) Navigator.pop(context);
-                    final snackBar = SnackBar(
-                      content: widget.createNewWorkout
-                          ? Text('Workout Saved')
-                          : Text('Workout Update Saved'),
-                      action: SnackBarAction(
-                        label: 'Show Workout',
-                        onPressed: () {
-                          // Some code to undo the change.
-                        },
-                      ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
+                onPressed: list.isEmpty
+                    ? () {
+                        final snackBar = SnackBar(
+                          content: Text('Add Exercises To Save Workout'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          List listOfIDs = [];
+                          list.forEach((name) {
+                            listOfIDs.add(name.docID);
+                          });
+                          widget.createNewWorkout
+                              ? await widget.addworkout(
+                                  _nameController.text, listOfIDs)
+                              : await widget.updateWorkout(_nameController.text,
+                                  listOfIDs, widget.workoutID);
+                          _nameController.clear();
+                          list.clear();
+                          _incrementCounter(list.length);
+                          if (!widget.createNewWorkout) Navigator.pop(context);
+                          final snackBar = SnackBar(
+                            content: widget.createNewWorkout
+                                ? Text('Workout Saved')
+                                : Text('Workout Update Saved'),
+                            action: SnackBarAction(
+                              label: 'Show Workout',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
                 height: 50,
                 minWidth: 300,
                 child: Text(

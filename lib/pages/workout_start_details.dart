@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:provider/provider.dart';
+import 'package:quantity_input/quantity_input.dart';
 
 class StartWorkoutDetailsRoute extends StatefulWidget {
   StartWorkoutDetailsRoute({super.key, required this.workout});
@@ -21,7 +22,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
         title: Row(
           children: [
             Expanded(
-              child: Text('Record Exercise'),
+              child: Text('${widget.workout.name}'),
             ),
             Text('($count/${widget.workout.exerciseRef.length}) '),
           ],
@@ -61,6 +62,8 @@ class _RecordWorkoutState extends State<RecordWorkout> {
     updateList(list);
   }
 
+  double weightInput = 0.0;
+  int repsInput = 0;
   List<Exrecises> list = [];
   List<Exrecises> updateList(List<Exrecises> list) {
     for (var count = 0; count < widget.workout.exerciseRef.length; count++)
@@ -92,32 +95,121 @@ class _RecordWorkoutState extends State<RecordWorkout> {
               SizedBox(
                 height: 20,
               ),
-              Text(
-                'Description',
-                style:
-                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(
-                      top: 10.0, bottom: 5.0, left: 7.0, right: 7.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color.fromARGB(255, 199, 220, 255),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Text(
-                      list[0].description,
-                      style: const TextStyle(fontSize: 18),
-                    ),
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    'Weight (kgs):',
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.start,
                   ),
                 ),
               ),
-              Spacer(flex: 3)
+              const Divider(
+                height: 20,
+                thickness: 0.7,
+                indent: 20,
+                endIndent: 20,
+                color: Colors.grey,
+              ),
+              QuantityInput(
+                  type: QuantityInputType.double,
+                  acceptsZero: true,
+                  value: weightInput,
+                  inputWidth: 100,
+                  minValue: double.infinity,
+                  step: 2.5,
+                  onChanged: (value) => setState(() =>
+                      weightInput = double.parse(value.replaceAll(',', '')))),
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    'Reps:',
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 20,
+                thickness: 0.7,
+                indent: 20,
+                endIndent: 20,
+                color: Colors.grey,
+              ),
+              QuantityInput(
+                  value: repsInput,
+                  inputWidth: 100,
+                  acceptsZero: true,
+                  onChanged: (value) => setState(
+                      () => repsInput = int.parse(value.replaceAll(',', '')))),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisSize: MainAxisSize
+                    .min, // this will take space as minimum as posible(to center)
+                children: <Widget>[
+                  Expanded(
+                    child: MaterialButton(
+                      color: Colors.blueAccent,
+                      disabledColor: Colors.grey,
+                      onPressed: () {
+                        setState(() {
+                          repsInput = 0;
+                          weightInput = 0;
+                        });
+                      },
+                      height: 50,
+                      minWidth: 100,
+                      child: Text(
+                        "Clear",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24)),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Expanded(
+                    child: MaterialButton(
+                      color: Color.fromARGB(255, 71, 250, 77),
+                      disabledColor: Colors.grey,
+                      onPressed: () {},
+                      height: 50,
+                      minWidth: 100,
+                      child: Text(
+                        "Add",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24)),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Spacer(flex: 3),
+              MaterialButton(
+                color: Colors.blueAccent,
+                disabledColor: Colors.grey,
+                onPressed: () {},
+                height: 50,
+                minWidth: 300,
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24)),
+              ),
             ],
           ),
         ),

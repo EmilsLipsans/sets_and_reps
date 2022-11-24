@@ -19,23 +19,27 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Expanded(
-              child: Text('${widget.workout.name}'),
-            ),
-            Text('($count/${widget.workout.exerciseRef.length}) '),
-          ],
-        ),
+        title: Text('${widget.workout.name}' +
+            ' ($count/${widget.workout.exerciseRef.length}) '),
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(
           children: [
             Expanded(
               child: RecordWorkout(
-                exercises: appState.exreciseList,
-                workout: widget.workout,
-              ),
+                  exercises: appState.exreciseList,
+                  workout: widget.workout,
+                  count: count,
+                  nextPressed: () {
+                    setState(() {
+                      count++;
+                    });
+                  },
+                  prevPressed: () {
+                    setState(() {
+                      count--;
+                    });
+                  }),
             ),
           ],
         ),
@@ -44,14 +48,29 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
   }
 }
 
+class RecordExercise {
+  const RecordExercise({
+    required this.reps,
+    required this.weight,
+  });
+  final reps;
+  final weight;
+}
+
 class RecordWorkout extends StatefulWidget {
-  const RecordWorkout({
+  RecordWorkout({
     super.key,
     required this.exercises,
     required this.workout,
+    required this.count,
+    required this.nextPressed,
+    required this.prevPressed,
   });
+  final VoidCallback nextPressed;
+  final VoidCallback prevPressed;
   final List<Exrecises> exercises;
   final workout;
+  int count;
   @override
   State<RecordWorkout> createState() => _RecordWorkoutState();
 }
@@ -64,7 +83,9 @@ class _RecordWorkoutState extends State<RecordWorkout> {
 
   double weightInput = 0.0;
   int repsInput = 0;
+  int listPos = 0;
   List<Exrecises> list = [];
+  List<RecordExercise> recordedExercises = [];
   List<Exrecises> updateList(List<Exrecises> list) {
     for (var count = 0; count < widget.workout.exerciseRef.length; count++)
       for (var value in widget.exercises) {
@@ -80,20 +101,21 @@ class _RecordWorkoutState extends State<RecordWorkout> {
     return list;
   }
 
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 20.0, bottom: 40.0, left: 20.0, right: 20.0),
+            top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
         child: Center(
           child: Column(
             children: [
               Text(
-                list[0].name,
+                list[listPos].name,
                 style: const TextStyle(fontSize: 18),
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Container(
                 padding: const EdgeInsets.only(left: 20),
@@ -149,66 +171,159 @@ class _RecordWorkoutState extends State<RecordWorkout> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisSize: MainAxisSize
-                    .min, // this will take space as minimum as posible(to center)
-                children: <Widget>[
-                  Expanded(
-                    child: MaterialButton(
-                      color: Colors.blueAccent,
-                      disabledColor: Colors.grey,
-                      onPressed: () {
-                        setState(() {
-                          repsInput = 0;
-                          weightInput = 0;
-                        });
-                      },
-                      height: 50,
-                      minWidth: 100,
-                      child: Text(
-                        "Clear",
-                        style: TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: MaterialButton(
+                        color: Colors.blueAccent,
+                        disabledColor: Colors.grey,
+                        onPressed: () {
+                          setState(() {
+                            repsInput = 0;
+                            weightInput = 0;
+                          });
+                        },
+                        height: 50,
+                        minWidth: 100,
+                        child: Text(
+                          "Clear",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24)),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24)),
                     ),
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    child: MaterialButton(
-                      color: Color.fromARGB(255, 71, 250, 77),
-                      disabledColor: Colors.grey,
-                      onPressed: () {},
-                      height: 50,
-                      minWidth: 100,
-                      child: Text(
-                        "Add",
-                        style: TextStyle(color: Colors.white),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Expanded(
+                      child: MaterialButton(
+                        color: Color.fromARGB(255, 71, 250, 77),
+                        disabledColor: Colors.grey,
+                        onPressed: () {
+                          setState(() {
+                            recordedExercises.add(RecordExercise(
+                                reps: repsInput, weight: weightInput));
+                          });
+                        },
+                        height: 50,
+                        minWidth: 100,
+                        child: Text(
+                          "Add",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24)),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24)),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               SizedBox(
                 height: 20,
               ),
-              Spacer(flex: 3),
-              MaterialButton(
-                color: Colors.blueAccent,
-                disabledColor: Colors.grey,
-                onPressed: () {},
-                height: 50,
-                minWidth: 300,
-                child: Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    for (var recordedExercise in recordedExercises)
+                      Card(
+                        clipBehavior: Clip.hardEdge,
+                        child: InkWell(
+                            onTap: () {},
+                            child: ListTile(
+                              tileColor: Color.fromARGB(255, 255, 255, 255),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Text(
+                                        "${recordedExercises.indexOf(recordedExercise) + 1}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Text(
+                                    "${recordedExercise.weight} kgs",
+                                    textAlign: TextAlign.right,
+                                  )),
+                                  Expanded(
+                                      child: Text(
+                                    "${recordedExercise.reps} reps",
+                                    textAlign: TextAlign.right,
+                                  )),
+                                ],
+                              ),
+                            )),
+                      ),
+                  ],
                 ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24)),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.blueAccent,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_rounded),
+                          color: Colors.white,
+                          onPressed: () {
+                            if (listPos != 0) {
+                              widget.prevPressed();
+                              setState(() {
+                                listPos -= 1;
+                                recordedExercises.clear();
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.blueAccent,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios_rounded),
+                          color: Colors.white,
+                          onPressed: () {
+                            if (listPos < list.length - 1) {
+                              widget.nextPressed();
+                              setState(() {
+                                listPos += 1;
+                                recordedExercises.clear();
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

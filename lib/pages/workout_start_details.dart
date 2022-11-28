@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
+import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:provider/provider.dart';
 import 'package:quantity_input/quantity_input.dart';
 
@@ -26,7 +27,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
         builder: (context, appState, _) => Column(
           children: [
             Expanded(
-              child: RecordWorkout(
+              child: RecordWorkoutPage(
                   exercises: appState.exreciseList,
                   workout: widget.workout,
                   count: count,
@@ -57,8 +58,17 @@ class RecordExercise {
   final weight;
 }
 
-class RecordWorkout extends StatefulWidget {
-  RecordWorkout({
+class RecordWorkout {
+  const RecordWorkout({
+    required this.exerciseID,
+    required this.recordedExercisesList,
+  });
+  final exerciseID;
+  final List<RecordExercise> recordedExercisesList;
+}
+
+class RecordWorkoutPage extends StatefulWidget {
+  RecordWorkoutPage({
     super.key,
     required this.exercises,
     required this.workout,
@@ -72,10 +82,10 @@ class RecordWorkout extends StatefulWidget {
   final workout;
   int count;
   @override
-  State<RecordWorkout> createState() => _RecordWorkoutState();
+  State<RecordWorkoutPage> createState() => _RecordWorkoutPageState();
 }
 
-class _RecordWorkoutState extends State<RecordWorkout> {
+class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
   void initState() {
     super.initState();
     updateList(list);
@@ -86,6 +96,7 @@ class _RecordWorkoutState extends State<RecordWorkout> {
   int listPos = 0;
   List<Exrecises> list = [];
   List<RecordExercise> recordedExercises = [];
+  late List<RecordWorkout> recordedWorkout = [];
   List<Exrecises> updateList(List<Exrecises> list) {
     for (var count = 0; count < widget.workout.exerciseRef.length; count++)
       for (var value in widget.exercises) {
@@ -99,6 +110,56 @@ class _RecordWorkoutState extends State<RecordWorkout> {
         continue;
       }
     return list;
+  }
+
+  void updateRecordWorkout() {
+    print(recordedWorkout.length);
+    print("update List length");
+    recordedWorkout.removeAt(listPos);
+    print(recordedWorkout.length);
+    print("update List length");
+    setState(() {
+      recordedWorkout.insert(
+          listPos,
+          RecordWorkout(
+              exerciseID: list[listPos].docID,
+              recordedExercisesList: List.from(recordedExercises)));
+    });
+    // if (listPos < list.length - 1) {
+    //   widget.nextPressed();
+    //   recordedExercises.clear();
+    // }
+  }
+
+  void addRecordWorkout() {
+    print("add to List length");
+    print(recordedWorkout.length);
+    setState(() {
+      recordedWorkout.insert(
+          listPos,
+          RecordWorkout(
+              exerciseID: list[listPos].docID,
+              recordedExercisesList: List.from(recordedExercises)));
+    });
+    print("Recorded List length");
+    print(recordedWorkout[listPos].recordedExercisesList.length);
+    // if (listPos < list.length - 1) {
+    //   widget.nextPressed();
+    //   recordedExercises.clear();
+    // }
+  }
+
+  void loadRecordedExercise() {
+    print("loadList length");
+    print(recordedWorkout[listPos].recordedExercisesList.length);
+    recordedExercises.clear();
+    print("loadList length");
+    print(recordedWorkout[listPos].recordedExercisesList.length);
+    setState(() {
+      for (var record in recordedWorkout[listPos].recordedExercisesList)
+        recordedExercises
+            .add(RecordExercise(reps: record.reps, weight: record.weight));
+    });
   }
 
   @override
@@ -281,18 +342,28 @@ class _RecordWorkoutState extends State<RecordWorkout> {
                           shape: CircleBorder(),
                         ),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
-                          color: Colors.white,
-                          onPressed: () {
-                            if (listPos != 0) {
-                              widget.prevPressed();
+                            icon: const Icon(Icons.arrow_back_ios_rounded),
+                            color: Colors.white,
+                            onPressed: () {
                               setState(() {
-                                listPos -= 1;
-                                recordedExercises.clear();
+                                if (listPos != 0) {
+                                  widget.prevPressed();
+                                  if (recordedWorkout
+                                      .asMap()
+                                      .containsKey(listPos))
+                                    updateRecordWorkout();
+                                  else
+                                    addRecordWorkout();
+
+                                  recordedExercises.clear();
+                                  listPos -= 1;
+                                  if (recordedWorkout
+                                      .asMap()
+                                      .containsKey(listPos))
+                                    loadRecordedExercise();
+                                }
                               });
-                            }
-                          },
-                        ),
+                            }),
                       ),
                     ),
                   ),
@@ -311,13 +382,26 @@ class _RecordWorkoutState extends State<RecordWorkout> {
                           icon: const Icon(Icons.arrow_forward_ios_rounded),
                           color: Colors.white,
                           onPressed: () {
-                            if (listPos < list.length - 1) {
-                              widget.nextPressed();
-                              setState(() {
-                                listPos += 1;
-                                recordedExercises.clear();
-                              });
-                            }
+                            setState(
+                              () {
+                                if (listPos < list.length - 1) {
+                                  widget.nextPressed();
+                                  if (recordedWorkout
+                                      .asMap()
+                                      .containsKey(listPos))
+                                    updateRecordWorkout();
+                                  else
+                                    addRecordWorkout();
+
+                                  recordedExercises.clear();
+                                  listPos += 1;
+                                  if (recordedWorkout
+                                      .asMap()
+                                      .containsKey(listPos))
+                                    loadRecordedExercise();
+                                }
+                              },
+                            );
                           },
                         ),
                       ),
@@ -330,5 +414,8 @@ class _RecordWorkoutState extends State<RecordWorkout> {
         ),
       ),
     );
+
+    List add() {}
+    List load() {}
   }
 }

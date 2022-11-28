@@ -172,7 +172,7 @@ class MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
       // floatingActionButton: floatingButtons[_selectedIndex],

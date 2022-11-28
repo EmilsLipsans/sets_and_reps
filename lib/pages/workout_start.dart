@@ -45,36 +45,40 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 20.0, bottom: 30.0, left: 20.0, right: 20.0),
+            top: 20.0, bottom: 15.0, left: 20.0, right: 20.0),
         child: Column(
           children: [
             Expanded(
               flex: 9,
               child: exerciseRadioCardList(widget.workouts),
             ),
-            Spacer(),
-            MaterialButton(
-              color: Colors.blueAccent,
-              disabledColor: Colors.grey,
-              onPressed: checkedWorkout == null
-                  ? null
-                  : () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StartWorkoutDetailsRoute(
-                                  workout: checkedWorkout,
-                                )),
-                      );
-                    },
-              height: 50,
-              minWidth: 300,
-              child: Text(
-                "Start",
-                style: TextStyle(color: Colors.white),
+            SizedBox(
+              height: 15,
+            ),
+            Center(
+              child: MaterialButton(
+                color: Colors.blueAccent,
+                disabledColor: Colors.grey,
+                onPressed: checkedWorkout == null
+                    ? null
+                    : () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StartWorkoutDetailsRoute(
+                                    workout: checkedWorkout,
+                                  )),
+                        );
+                      },
+                height: 50,
+                minWidth: 300,
+                child: Text(
+                  "Start",
+                  style: TextStyle(color: Colors.white),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24)),
               ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24)),
             ),
           ],
         ),

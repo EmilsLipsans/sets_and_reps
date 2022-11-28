@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
-import 'package:gtk_flutter/pages/workouts.dart';
+import 'package:gtk_flutter/pages/workout_start_details_end.dart';
 import 'package:provider/provider.dart';
 import 'package:quantity_input/quantity_input.dart';
 
@@ -29,6 +29,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
             Expanded(
               child: RecordWorkoutPage(
                   exercises: appState.exreciseList,
+                  workoutName: widget.workout.name,
                   workout: widget.workout,
                   count: count,
                   nextPressed: () {
@@ -72,6 +73,7 @@ class RecordWorkoutPage extends StatefulWidget {
     super.key,
     required this.exercises,
     required this.workout,
+    required this.workoutName,
     required this.count,
     required this.nextPressed,
     required this.prevPressed,
@@ -80,6 +82,7 @@ class RecordWorkoutPage extends StatefulWidget {
   final VoidCallback prevPressed;
   final List<Exrecises> exercises;
   final workout;
+  final workoutName;
   int count;
   @override
   State<RecordWorkoutPage> createState() => _RecordWorkoutPageState();
@@ -91,9 +94,15 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
     updateList(list);
   }
 
+  int reps() {
+    return repsInput;
+  }
+
   double weightInput = 0.0;
   int repsInput = 0;
   int listPos = 0;
+  late int cardSelected;
+  bool exerciseCardTapped = false;
   List<Exrecises> list = [];
   List<RecordExercise> recordedExercises = [];
   late List<RecordWorkout> recordedWorkout = [];
@@ -113,11 +122,8 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
   }
 
   void updateRecordWorkout() {
-    print(recordedWorkout.length);
-    print("update List length");
     recordedWorkout.removeAt(listPos);
-    print(recordedWorkout.length);
-    print("update List length");
+
     setState(() {
       recordedWorkout.insert(
           listPos,
@@ -125,36 +131,19 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
               exerciseID: list[listPos].docID,
               recordedExercisesList: List.from(recordedExercises)));
     });
-    // if (listPos < list.length - 1) {
-    //   widget.nextPressed();
-    //   recordedExercises.clear();
-    // }
   }
 
   void addRecordWorkout() {
-    print("add to List length");
-    print(recordedWorkout.length);
     setState(() {
-      recordedWorkout.insert(
-          listPos,
-          RecordWorkout(
-              exerciseID: list[listPos].docID,
-              recordedExercisesList: List.from(recordedExercises)));
+      recordedWorkout.add(RecordWorkout(
+          exerciseID: list[listPos].docID,
+          recordedExercisesList: List.from(recordedExercises)));
     });
-    print("Recorded List length");
-    print(recordedWorkout[listPos].recordedExercisesList.length);
-    // if (listPos < list.length - 1) {
-    //   widget.nextPressed();
-    //   recordedExercises.clear();
-    // }
   }
 
   void loadRecordedExercise() {
-    print("loadList length");
-    print(recordedWorkout[listPos].recordedExercisesList.length);
     recordedExercises.clear();
-    print("loadList length");
-    print(recordedWorkout[listPos].recordedExercisesList.length);
+
     setState(() {
       for (var record in recordedWorkout[listPos].recordedExercisesList)
         recordedExercises
@@ -224,7 +213,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                 color: Colors.grey,
               ),
               QuantityInput(
-                  value: repsInput,
+                  value: reps(),
                   inputWidth: 100,
                   acceptsZero: true,
                   onChanged: (value) => setState(
@@ -239,18 +228,24 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                   children: <Widget>[
                     Expanded(
                       child: MaterialButton(
-                        color: Colors.blueAccent,
+                        color:
+                            exerciseCardTapped ? Colors.red : Colors.blueAccent,
                         disabledColor: Colors.grey,
                         onPressed: () {
-                          setState(() {
-                            repsInput = 0;
-                            weightInput = 0;
-                          });
+                          exerciseCardTapped
+                              ? setState(() {
+                                  recordedExercises.removeAt(cardSelected);
+                                  exerciseCardTapped = false;
+                                })
+                              : setState(() {
+                                  repsInput = 0;
+                                  weightInput = 0;
+                                });
                         },
                         height: 50,
                         minWidth: 100,
                         child: Text(
-                          "Clear",
+                          exerciseCardTapped ? "Delete" : "Clear",
                           style: TextStyle(color: Colors.white),
                         ),
                         shape: RoundedRectangleBorder(
@@ -265,15 +260,22 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                         color: Color.fromARGB(255, 71, 250, 77),
                         disabledColor: Colors.grey,
                         onPressed: () {
-                          setState(() {
-                            recordedExercises.add(RecordExercise(
-                                reps: repsInput, weight: weightInput));
-                          });
+                          exerciseCardTapped
+                              ? setState(() {
+                                  recordedExercises[cardSelected] =
+                                      RecordExercise(
+                                          reps: repsInput, weight: weightInput);
+                                  exerciseCardTapped = false;
+                                })
+                              : setState(() {
+                                  recordedExercises.add(RecordExercise(
+                                      reps: repsInput, weight: weightInput));
+                                });
                         },
                         height: 50,
                         minWidth: 100,
                         child: Text(
-                          "Add",
+                          exerciseCardTapped ? "Update" : "Add",
                           style: TextStyle(color: Colors.white),
                         ),
                         shape: RoundedRectangleBorder(
@@ -294,7 +296,13 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                       Card(
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                exerciseCardTapped = true;
+                                cardSelected =
+                                    recordedExercises.indexOf(recordedExercise);
+                              });
+                            },
                             child: ListTile(
                               tileColor: Color.fromARGB(255, 255, 255, 255),
                               title: Row(
@@ -357,6 +365,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
 
                                   recordedExercises.clear();
                                   listPos -= 1;
+                                  exerciseCardTapped = false;
                                   if (recordedWorkout
                                       .asMap()
                                       .containsKey(listPos))
@@ -382,6 +391,17 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                           icon: const Icon(Icons.arrow_forward_ios_rounded),
                           color: Colors.white,
                           onPressed: () {
+                            if (listPos == list.length - 1) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FinishWorkoutDetailsRoute(
+                                            workoutName: widget.workoutName,
+                                            recordedWorkout: recordedWorkout,
+                                            workoutExercises: list,
+                                          )));
+                            }
                             setState(
                               () {
                                 if (listPos < list.length - 1) {
@@ -395,6 +415,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
 
                                   recordedExercises.clear();
                                   listPos += 1;
+                                  exerciseCardTapped = false;
                                   if (recordedWorkout
                                       .asMap()
                                       .containsKey(listPos))
@@ -406,7 +427,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                         ),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ],
@@ -414,8 +435,5 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
         ),
       ),
     );
-
-    List add() {}
-    List load() {}
   }
 }

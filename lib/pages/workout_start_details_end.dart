@@ -70,23 +70,41 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
-                        title: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 5.0,
-                              bottom: 5.0,
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: IconButton(
+                                    icon: Icon(
+                                      Icons.create_rounded,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ),
                             ),
-                            child: Text(
-                              "${exercise.name}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${exercise.name}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
                             ),
-                          ),
+                            Spacer(),
+                          ],
                         ),
                         subtitle: Column(
                           children: [
-                            for (var exercise in widget.workoutExercises)
+                            for (var record in widget
+                                .recordedWorkout[
+                                    widget.workoutExercises.indexOf(exercise)]
+                                .recordedExercisesList)
                               Card(
                                 clipBehavior: Clip.hardEdge,
                                 child: ListTile(
@@ -106,12 +124,12 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                        "2 kgs",
+                                        "${record.weight} kgs",
                                         textAlign: TextAlign.right,
                                       )),
                                       Expanded(
                                           child: Text(
-                                        "1 reps",
+                                        "${record.reps} reps",
                                         textAlign: TextAlign.right,
                                       )),
                                     ],

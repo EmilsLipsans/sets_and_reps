@@ -22,6 +22,12 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
       appBar: AppBar(
         title: Text('${widget.workout.name}' +
             ' ($count/${widget.workout.exerciseRef.length}) '),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(
@@ -119,6 +125,12 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
         continue;
       }
     return list;
+  }
+
+  void setListPos(int pos) {
+    setState(() {
+      listPos = pos;
+    });
   }
 
   void updateRecordWorkout() {
@@ -391,38 +403,41 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                           icon: const Icon(Icons.arrow_forward_ios_rounded),
                           color: Colors.white,
                           onPressed: () {
-                            if (listPos == list.length - 1) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          FinishWorkoutDetailsRoute(
-                                            workoutName: widget.workoutName,
-                                            recordedWorkout: recordedWorkout,
-                                            workoutExercises: list,
-                                          )));
-                            }
-                            setState(
-                              () {
-                                if (listPos < list.length - 1) {
-                                  widget.nextPressed();
-                                  if (recordedWorkout
-                                      .asMap()
-                                      .containsKey(listPos))
-                                    updateRecordWorkout();
-                                  else
-                                    addRecordWorkout();
+                            setState(() {
+                              if (listPos == list.length - 1) {
+                                if (recordedWorkout
+                                    .asMap()
+                                    .containsKey(listPos))
+                                  updateRecordWorkout();
+                                else
+                                  addRecordWorkout();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            FinishWorkoutDetailsRoute(
+                                              workoutName: widget.workoutName,
+                                              recordedWorkout: recordedWorkout,
+                                              workoutExercises: list,
+                                            )));
+                              } else {
+                                widget.nextPressed();
+                                if (recordedWorkout
+                                    .asMap()
+                                    .containsKey(listPos))
+                                  updateRecordWorkout();
+                                else
+                                  addRecordWorkout();
 
-                                  recordedExercises.clear();
-                                  listPos += 1;
-                                  exerciseCardTapped = false;
-                                  if (recordedWorkout
-                                      .asMap()
-                                      .containsKey(listPos))
-                                    loadRecordedExercise();
-                                }
-                              },
-                            );
+                                recordedExercises.clear();
+                                listPos += 1;
+                                exerciseCardTapped = false;
+                                if (recordedWorkout
+                                    .asMap()
+                                    .containsKey(listPos))
+                                  loadRecordedExercise();
+                              }
+                            });
                           },
                         ),
                       ),

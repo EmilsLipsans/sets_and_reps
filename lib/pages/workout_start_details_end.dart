@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:provider/provider.dart';
@@ -5,17 +7,17 @@ import 'package:provider/provider.dart';
 class FinishWorkoutDetailsRoute extends StatelessWidget {
   const FinishWorkoutDetailsRoute(
       {super.key,
-      required this.workoutName,
+      required this.workout,
       required this.workoutExercises,
       required this.recordedWorkout});
-  final workoutName;
+  final workout;
   final workoutExercises;
   final recordedWorkout;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Finish $workoutName'),
+        title: Text('Finish ${workout.name}'),
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(
@@ -24,6 +26,9 @@ class FinishWorkoutDetailsRoute extends StatelessWidget {
               child: FinishWorkoutPage(
                 workoutExercises: workoutExercises,
                 recordedWorkout: recordedWorkout,
+                workout: workout,
+                recordWorkout: (String workoutID, List recordList) =>
+                    appState.recordWorkout(workoutID, recordList),
               ),
             ),
           ],
@@ -34,17 +39,39 @@ class FinishWorkoutDetailsRoute extends StatelessWidget {
 }
 
 class FinishWorkoutPage extends StatefulWidget {
-  const FinishWorkoutPage(
-      {super.key,
-      required this.workoutExercises,
-      required this.recordedWorkout});
+  const FinishWorkoutPage({
+    super.key,
+    required this.workoutExercises,
+    required this.recordedWorkout,
+    required this.recordWorkout,
+    required this.workout,
+  });
   final workoutExercises;
   final recordedWorkout;
+  final workout;
+  final FutureOr<void> Function(String workoutID, List recordList)
+      recordWorkout;
   @override
   State<FinishWorkoutPage> createState() => _FinishWorkoutPageState();
 }
 
 class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
+  List formatData() {
+    List formatedWorkoutList = [];
+    List sets = [];
+    for (var exercise in widget.workoutExercises) {
+      for (var record in widget
+          .recordedWorkout[widget.workoutExercises.indexOf(exercise)]
+          .recordedExercisesList) {
+        sets.add({'weight': record.weight, 'reps': record.reps});
+      }
+      formatedWorkoutList
+          .add({'exerciseID': exercise.docID, 'sets': List.from(sets)});
+      sets.clear();
+    }
+    return formatedWorkoutList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,7 +108,10 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                                       color: Colors.blueAccent,
                                     ),
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      Navigator.pop(
+                                          context,
+                                          widget.workoutExercises
+                                              .indexOf(exercise));
                                     }),
                               ),
                             ),
@@ -115,7 +145,7 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                                           padding: const EdgeInsets.only(
                                               left: 20.0, right: 20.0),
                                           child: Text(
-                                            "1",
+                                            "${widget.recordedWorkout[widget.workoutExercises.indexOf(exercise)].recordedExercisesList.indexOf(record) + 1}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.grey),
@@ -154,11 +184,14 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
             Center(
               child: MaterialButton(
                 color: Colors.blueAccent,
-                onPressed: () async {},
+                onPressed: () async {
+                  await widget.recordWorkout(
+                      widget.workout.docID, formatData());
+                },
                 height: 50,
                 minWidth: 300,
                 child: Text(
-                  "Start",
+                  "Save",
                   style: TextStyle(color: Colors.white),
                 ),
                 shape: RoundedRectangleBorder(

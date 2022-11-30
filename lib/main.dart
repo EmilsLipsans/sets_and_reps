@@ -268,6 +268,22 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  Future<DocumentReference> recordWorkout(String workoutID, List recordList) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('workoutRecords')
+        .add(<String, dynamic>{
+      'workoutID': workoutID,
+      'recordedExercises': recordList,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'username': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
   Future<void> favoriteWorkout(String docID, bool favorite) {
     if (!_loggedIn) {
       throw Exception('Must be logged in');

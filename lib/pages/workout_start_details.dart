@@ -35,9 +35,13 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
             Expanded(
               child: RecordWorkoutPage(
                   exercises: appState.exreciseList,
-                  workoutName: widget.workout.name,
                   workout: widget.workout,
                   count: count,
+                  countChanged: (result) {
+                    setState(() {
+                      count = result + 1;
+                    });
+                  },
                   nextPressed: () {
                     setState(() {
                       count++;
@@ -79,16 +83,17 @@ class RecordWorkoutPage extends StatefulWidget {
     super.key,
     required this.exercises,
     required this.workout,
-    required this.workoutName,
     required this.count,
     required this.nextPressed,
     required this.prevPressed,
+    required this.countChanged,
   });
   final VoidCallback nextPressed;
   final VoidCallback prevPressed;
+  final Function(int) countChanged;
   final List<Exrecises> exercises;
   final workout;
-  final workoutName;
+
   int count;
   @override
   State<RecordWorkoutPage> createState() => _RecordWorkoutPageState();
@@ -98,10 +103,6 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
   void initState() {
     super.initState();
     updateList(list);
-  }
-
-  int reps() {
-    return repsInput;
   }
 
   double weightInput = 0.0;
@@ -127,10 +128,31 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
     return list;
   }
 
-  void setListPos(int pos) {
-    setState(() {
-      listPos = pos;
-    });
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FinishWorkoutDetailsRoute(
+                  workout: widget.workout,
+                  recordedWorkout: recordedWorkout,
+                  workoutExercises: list,
+                )));
+
+    // When a BuildContext is used from a StatefulWidget, the mounted property
+    // must be checked after an asynchronous gap.
+    if (!mounted) return;
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    if (result != null) {
+      setState(() {
+        listPos = result;
+        widget.countChanged(listPos);
+        loadRecordedExercise();
+      });
+    }
   }
 
   void updateRecordWorkout() {
@@ -225,7 +247,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                 color: Colors.grey,
               ),
               QuantityInput(
-                  value: reps(),
+                  value: repsInput,
                   inputWidth: 100,
                   acceptsZero: true,
                   onChanged: (value) => setState(
@@ -411,15 +433,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                                   updateRecordWorkout();
                                 else
                                   addRecordWorkout();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            FinishWorkoutDetailsRoute(
-                                              workoutName: widget.workoutName,
-                                              recordedWorkout: recordedWorkout,
-                                              workoutExercises: list,
-                                            )));
+                                _navigateAndDisplaySelection(context);
                               } else {
                                 widget.nextPressed();
                                 if (recordedWorkout

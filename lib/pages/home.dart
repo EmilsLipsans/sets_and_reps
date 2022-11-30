@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gtk_flutter/pages/exercise_create.dart';
 import 'package:gtk_flutter/pages/workout_start.dart';
 
 class HomePage extends StatelessWidget {

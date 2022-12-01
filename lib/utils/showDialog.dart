@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gtk_flutter/pages/workout_start.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 showExerciseDetails(context, workout) {
   YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: 'iLnmTe5Q2Qw',
     flags: YoutubePlayerFlags(
-      autoPlay: true,
-      mute: true,
+      autoPlay: false,
+      mute: false,
     ),
   );
   const List<String> items = [
@@ -70,7 +71,14 @@ showExerciseDetails(context, workout) {
                         ],
                       ),
                       Spacer(),
+                      Text('Video Example',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
                       YoutubePlayer(
+                        bottomActions: [
+                          CurrentPosition(),
+                          ProgressBar(isExpanded: true),
+                        ],
                         controller: _controller,
                         showVideoProgressIndicator: true,
                       ),

@@ -237,7 +237,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
-                        splashColor: Color.fromARGB(255, 1, 179, 7),
+                        splashColor: Color.fromRGBO(54, 224, 126, 88),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -247,7 +247,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                           );
                         },
                         child: ListTile(
-                          tileColor: Color.fromARGB(255, 131, 241, 135),
+                          tileColor: Color.fromRGBO(54, 224, 126, 88),
                           title: Center(
                             child: Text('Add New Exercise'),
                           ),
@@ -273,7 +273,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: MaterialButton(
-                      color: Colors.blueAccent,
+                      color: Colors.blue,
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -298,7 +298,7 @@ class _NewWorkoutState extends State<NewWorkout> {
               ),
               Spacer(),
               MaterialButton(
-                color: Colors.blueAccent,
+                color: Colors.blue,
                 onPressed: list.isEmpty
                     ? () {
                         final snackBar = SnackBar(
@@ -358,7 +358,7 @@ class _NewWorkoutState extends State<NewWorkout> {
         leading: IconButton(
             icon: Icon(
               Icons.add_circle_rounded,
-              color: Colors.blueAccent,
+              color: Colors.blue,
             ),
             onPressed: () {
               if (exercisesAdded < 10) {
@@ -376,7 +376,7 @@ class _NewWorkoutState extends State<NewWorkout> {
         trailing: PopupMenuButton(
           onSelected: (value) {
             if (value == 0) {
-              showExerciseDetails(context, newWorkout, items);
+              showExerciseDetails(context, newWorkout);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(

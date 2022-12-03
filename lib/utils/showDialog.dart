@@ -3,9 +3,12 @@ import 'package:gtk_flutter/pages/workout_start.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 showExerciseDetails(context, workout) {
+  String? videoId;
+  videoId = YoutubePlayer.convertUrlToId("${workout.url}");
   YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: 'iLnmTe5Q2Qw',
+    initialVideoId: '$videoId',
     flags: YoutubePlayerFlags(
+      hideThumbnail: true,
       autoPlay: false,
       mute: false,
     ),
@@ -71,17 +74,22 @@ showExerciseDetails(context, workout) {
                         ],
                       ),
                       Spacer(),
-                      Text('Video Example',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      videoId != null
+                          ? Text('Video Example',
+                              style: TextStyle(fontWeight: FontWeight.bold))
+                          : Text('No Video Example',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                       SizedBox(height: 5),
-                      YoutubePlayer(
-                        bottomActions: [
-                          CurrentPosition(),
-                          ProgressBar(isExpanded: true),
-                        ],
-                        controller: _controller,
-                        showVideoProgressIndicator: true,
-                      ),
+                      videoId != null
+                          ? YoutubePlayer(
+                              bottomActions: [
+                                CurrentPosition(),
+                                ProgressBar(isExpanded: true),
+                              ],
+                              controller: _controller,
+                              showVideoProgressIndicator: true,
+                            )
+                          : SizedBox(height: 20),
                     ],
                   ),
                 );

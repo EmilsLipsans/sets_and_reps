@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/workout_start_details_end.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 import 'package:quantity_input/quantity_input.dart';
 
@@ -16,6 +17,7 @@ class StartWorkoutDetailsRoute extends StatefulWidget {
 
 class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
   int count = 1;
+  late List updateList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,9 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.info_outline),
-            onPressed: () {},
+            onPressed: () {
+              showExerciseDetails(context, updateList[count - 1]);
+            },
           ),
         ],
       ),
@@ -37,6 +41,9 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
                   exercises: appState.exreciseList,
                   workout: widget.workout,
                   count: count,
+                  updateList: (list) {
+                    updateList = list;
+                  },
                   countChanged: (result) {
                     setState(() {
                       count = result + 1;
@@ -84,6 +91,7 @@ class RecordWorkoutPage extends StatefulWidget {
     required this.exercises,
     required this.workout,
     required this.count,
+    required this.updateList,
     required this.nextPressed,
     required this.prevPressed,
     required this.countChanged,
@@ -91,6 +99,7 @@ class RecordWorkoutPage extends StatefulWidget {
   final VoidCallback nextPressed;
   final VoidCallback prevPressed;
   final Function(int) countChanged;
+  final Function(List) updateList;
   final List<Exrecises> exercises;
   final workout;
 
@@ -125,6 +134,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
               category: value.category));
         continue;
       }
+    widget.updateList(list);
     return list;
   }
 

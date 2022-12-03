@@ -44,7 +44,6 @@ class ExerciseDetailsRouteState extends State<ExerciseDetailsRoute> {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            Text('Description', style: TextStyle(fontSize: 18)),
                             SizedBox(
                               height: 15,
                             ),

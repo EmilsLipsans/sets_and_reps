@@ -187,6 +187,7 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                 onPressed: () async {
                   await widget.recordWorkout(
                       widget.workout.docID, formatData());
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 },
                 height: 50,
                 minWidth: 300,

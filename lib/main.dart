@@ -197,9 +197,12 @@ class ApplicationState extends ChangeNotifier {
   List<Exrecises> get exreciseList => _exreciseList;
 
   StreamSubscription<QuerySnapshot>? _workoutListSubscription;
-  StreamSubscription<QuerySnapshot>? _workoutFavoriteListSubscription;
   List<Workout> _workoutList = [];
   List<Workout> get workoutList => _workoutList;
+
+  StreamSubscription<QuerySnapshot>? _workoutRecordListSubscription;
+  List<WorkoutRecord> _workoutRecordList = [];
+  List<WorkoutRecord> get workoutRecordList => _workoutRecordList;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -214,6 +217,7 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = true;
 
         loadWorkouts();
+        loadWorkoutRecords();
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
             .orderBy('timestamp', descending: true)
@@ -237,9 +241,10 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = false;
         _exreciseList = [];
         _workoutList = [];
+        _workoutRecordList = [];
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
-        _workoutFavoriteListSubscription?.cancel();
+        _workoutRecordListSubscription?.cancel();
       }
       notifyListeners();
     });
@@ -261,6 +266,30 @@ class ApplicationState extends ChangeNotifier {
                 document.data()['exerciseRef'].cast<String>() as List<String>,
             name: document.data()['name'] as String,
             favorite: document.data()['favorite'] as bool,
+          ),
+        );
+      }
+      notifyListeners();
+    });
+  }
+
+  loadWorkoutRecords() {
+    final twoWeeks = DateTime.now().millisecondsSinceEpoch - (2 * 604800000);
+    _workoutRecordListSubscription = FirebaseFirestore.instance
+        .collection('workoutRecords')
+        .where('timestamp', isGreaterThan: twoWeeks)
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      _workoutRecordList = [];
+      for (final document in snapshot.docs) {
+        _workoutRecordList.add(
+          WorkoutRecord(
+            workoutID: document.data()['workoutID'],
+            recordedExercises: document
+                .data()['recordedExercises']
+                .cast<String>() as List<String>,
+            time: document.data()['timestamp'] as int,
           ),
         );
       }

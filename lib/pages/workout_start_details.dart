@@ -272,8 +272,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                   children: <Widget>[
                     Expanded(
                       child: MaterialButton(
-                        color:
-                            exerciseCardTapped ? Colors.red : Colors.blueAccent,
+                        color: exerciseCardTapped ? Colors.red : Colors.blue,
                         disabledColor: Colors.grey,
                         onPressed: () {
                           exerciseCardTapped
@@ -283,7 +282,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                                 })
                               : setState(() {
                                   repsInput = 0;
-                                  weightInput = 0;
+                                  weightInput = 0.0;
                                 });
                         },
                         height: 50,
@@ -390,7 +389,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                       alignment: Alignment.bottomRight,
                       child: Ink(
                         decoration: const ShapeDecoration(
-                          color: Colors.blueAccent,
+                          color: Colors.blue,
                           shape: CircleBorder(),
                         ),
                         child: IconButton(
@@ -428,7 +427,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                       alignment: Alignment.bottomLeft,
                       child: Ink(
                         decoration: const ShapeDecoration(
-                          color: Colors.blueAccent,
+                          color: Colors.blue,
                           shape: CircleBorder(),
                         ),
                         child: IconButton(

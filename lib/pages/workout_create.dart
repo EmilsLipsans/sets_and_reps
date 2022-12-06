@@ -237,7 +237,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
-                        splashColor: Color.fromRGBO(54, 224, 126, 88),
+                        splashColor: Color.fromARGB(255, 71, 250, 77),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -247,7 +247,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                           );
                         },
                         child: ListTile(
-                          tileColor: Color.fromRGBO(54, 224, 126, 88),
+                          tileColor: Color.fromARGB(255, 71, 250, 77),
                           title: Center(
                             child: Text('Add New Exercise'),
                           ),

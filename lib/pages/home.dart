@@ -51,7 +51,7 @@ class WorkoutRecord {
   });
   final String workoutID;
   final int time;
-  final List<String> recordedExercises;
+  final List recordedExercises;
 }
 
 class WorkoutRecordPage extends StatefulWidget {
@@ -78,12 +78,15 @@ class WorkoutRecordPage extends StatefulWidget {
 }
 
 class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
-  void updateNameList() {
+  void updateData() {
     setState(() {
       nameList = widget.workoutNameList();
-      if (widget.recordedWorkouts.isNotEmpty)
+      if (widget.recordedWorkouts.isNotEmpty) {
         recordTime = DateTime.fromMillisecondsSinceEpoch(
             widget.recordedWorkouts.first.time);
+        exerciseDataList = exerciseData(exercisePos);
+        exerciseCount = widget.recordedWorkouts[0].recordedExercises.length;
+      }
       timeAgo = Jiffy(recordTime).fromNow();
       for (var name in nameList) {
         lastWorkoutName = name;
@@ -92,11 +95,23 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
     });
   }
 
-  List nameList = [];
+  List exerciseData(int exercisePos) {
+    List data = [];
+    for (var workout in widget.recordedWorkouts[0].recordedExercises)
+      if (exercisePos ==
+          widget.recordedWorkouts[0].recordedExercises.indexOf(workout))
+        data.add(workout);
+    return data;
+  }
 
+  List nameList = [];
+  List exerciseDataList = [];
   String lastWorkoutName = 'No data';
   var recordTime = new DateTime.now();
   var timeAgo = 'No data';
+  int exercisePos = 0;
+  int exerciseCount = 0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -107,7 +122,9 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
           children: [
             Expanded(
               flex: 2,
-              child: upperCard(),
+              child: widget.recordedWorkouts.isNotEmpty
+                  ? upperCard()
+                  : Text('No Data'),
             ),
             SizedBox(
               height: 10,
@@ -134,8 +151,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget upperCard() {
-    updateNameList();
-
+    updateData();
     return Card(
       elevation: 0,
       color: Color.fromRGBO(68, 138, 255, 0.6),
@@ -152,7 +168,9 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
         child: Column(
           children: [
             Text(
-              '$lastWorkoutName (1/6)',
+              '$lastWorkoutName ' +
+                  '(${exercisePos + 1}/'
+                      '$exerciseCount)',
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -172,55 +190,62 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
               height: 5,
             ),
             Expanded(
-              flex: 2,
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  for (var workout in widget.recordedWorkouts)
-                    Card(
-                      clipBehavior: Clip.hardEdge,
-                      child: SizedBox(
-                        height: 42,
-                        child: ListTile(
-                          tileColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: Color.fromRGBO(68, 138, 255, 1)),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          title: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 5.0, bottom: 14),
-                                  child: Text(
-                                    "",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey),
+                flex: 2,
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    for (var workout in exerciseDataList)
+                      for (var set in workout['sets'])
+                        Card(
+                          clipBehavior: Clip.hardEdge,
+                          child: SizedBox(
+                            height: 42,
+                            child: ListTile(
+                              tileColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Color.fromRGBO(68, 138, 255, 1)),
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0, bottom: 14),
+                                      child: Text(
+                                        "${workout['sets'].indexOf(set) + 1}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Expanded(
+                                    child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 14),
+                                        child: Text(
+                                          "${set['weight']} kgs",
+                                          textAlign: TextAlign.right,
+                                        )),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 14),
+                                        child: Text(
+                                          "${set['reps']} reps",
+                                          textAlign: TextAlign.right,
+                                        )),
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 14),
-                                    child: Text(
-                                      "${nameList[widget.recordedWorkouts.indexOf(workout)]}",
-                                      textAlign: TextAlign.left,
-                                    )),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+                  ],
+                )),
             SizedBox(
               height: 10,
             ),
@@ -240,7 +265,13 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                           iconSize: 20,
                           icon: const Icon(Icons.arrow_back_ios_rounded),
                           color: Colors.white,
-                          onPressed: () {}),
+                          onPressed: () {
+                            setState(() {
+                              if (exercisePos != 0) {
+                                exercisePos--;
+                              }
+                            });
+                          }),
                     ),
                   ),
                 ),
@@ -261,7 +292,13 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                         iconSize: 20,
                         icon: const Icon(Icons.arrow_forward_ios_rounded),
                         color: Colors.white,
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            if (exercisePos != exerciseCount - 1) {
+                              exercisePos++;
+                            }
+                          });
+                        },
                       ),
                     ),
                   ),
@@ -282,7 +319,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget exerciseCardList() {
-    updateNameList();
+    updateData();
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[

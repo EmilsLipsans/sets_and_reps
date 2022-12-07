@@ -282,16 +282,30 @@ class ApplicationState extends ChangeNotifier {
         .snapshots()
         .listen((snapshot) {
       _workoutRecordList = [];
+      List recordedExerciseList = [];
+      List sets = [];
       for (final document in snapshot.docs) {
+        for (var exercise in document.data()['recordedExercises']) {
+          for (var values in exercise.cast<String, dynamic>()['sets']) {
+            sets.add({
+              'weight': values.cast<String, dynamic>()['weight'],
+              'reps': values.cast<String, dynamic>()['reps']
+            });
+          }
+          recordedExerciseList.add({
+            'exerciseID:': exercise.cast<String, dynamic>()['exerciseID'],
+            'sets': List.from(sets)
+          });
+          sets.clear();
+        }
         _workoutRecordList.add(
           WorkoutRecord(
             workoutID: document.data()['workoutID'],
-            recordedExercises: document
-                .data()['recordedExercises']
-                .cast<String>() as List<String>,
+            recordedExercises: List.from(recordedExerciseList),
             time: document.data()['timestamp'] as int,
           ),
         );
+        recordedExerciseList.clear();
       }
       notifyListeners();
     });

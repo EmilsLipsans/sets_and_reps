@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_start.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,10 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   void updateNameList() {
     setState(() {
       nameList = widget.workoutNameList();
-
+      if (widget.recordedWorkouts.isNotEmpty)
+        recordTime = DateTime.fromMillisecondsSinceEpoch(
+            widget.recordedWorkouts.first.time);
+      timeAgo = Jiffy(recordTime).fromNow();
       for (var name in nameList) {
         lastWorkoutName = name;
         break;
@@ -91,7 +95,8 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   List nameList = [];
 
   String lastWorkoutName = 'No data';
-
+  var recordTime = new DateTime.now();
+  var timeAgo = 'No data';
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -130,6 +135,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
 
   Widget upperCard() {
     updateNameList();
+
     return Card(
       elevation: 0,
       color: Color.fromRGBO(68, 138, 255, 0.6),
@@ -190,7 +196,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                                   padding: const EdgeInsets.only(
                                       right: 5.0, bottom: 14),
                                   child: Text(
-                                    "1",
+                                    "",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -265,7 +271,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                '3 days ago ',
+                '$timeAgo',
                 style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
               ),
             ),

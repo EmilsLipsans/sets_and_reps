@@ -204,6 +204,9 @@ class ApplicationState extends ChangeNotifier {
   List<WorkoutRecord> _workoutRecordList = [];
   List<WorkoutRecord> get workoutRecordList => _workoutRecordList;
 
+  StreamSubscription<QuerySnapshot>? _lastWorkoutRecordSubscription;
+  late WorkoutRecord finalWorkout;
+
   Future<void> init() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
@@ -218,6 +221,7 @@ class ApplicationState extends ChangeNotifier {
 
         loadWorkouts();
         loadWorkoutRecords();
+        loadLastWorkoutRecord();
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
             .orderBy('timestamp', descending: true)
@@ -245,6 +249,7 @@ class ApplicationState extends ChangeNotifier {
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
         _workoutRecordListSubscription?.cancel();
+        _lastWorkoutRecordSubscription?.cancel();
       }
       notifyListeners();
     });
@@ -273,6 +278,41 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  loadLastWorkoutRecord() {
+    _lastWorkoutRecordSubscription = FirebaseFirestore.instance
+        .collection('workoutRecords')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((snapshot) {
+      List recordedExerciseList = [];
+      List sets = [];
+      for (final document in snapshot.docs) {
+        for (var exercise in document.data()['recordedExercises']) {
+          for (var values in exercise.cast<String, dynamic>()['sets']) {
+            sets.add({
+              'weight': values.cast<String, dynamic>()['weight'],
+              'reps': values.cast<String, dynamic>()['reps']
+            });
+          }
+          recordedExerciseList.add({
+            'exerciseID': exercise.cast<String, dynamic>()['exerciseID'],
+            'sets': List.from(sets)
+          });
+          sets.clear();
+        }
+        finalWorkout = WorkoutRecord(
+          workoutID: document.data()['workoutID'],
+          recordedExercises: List.from(recordedExerciseList),
+          time: document.data()['timestamp'] as int,
+        );
+
+        recordedExerciseList.clear();
+      }
+      notifyListeners();
+    });
+  }
+
   loadWorkoutRecords() {
     final twoWeeks = DateTime.now().millisecondsSinceEpoch - (2 * 604800000);
     _workoutRecordListSubscription = FirebaseFirestore.instance
@@ -293,7 +333,7 @@ class ApplicationState extends ChangeNotifier {
             });
           }
           recordedExerciseList.add({
-            'exerciseID:': exercise.cast<String, dynamic>()['exerciseID'],
+            'exerciseID': exercise.cast<String, dynamic>()['exerciseID'],
             'sets': List.from(sets)
           });
           sets.clear();

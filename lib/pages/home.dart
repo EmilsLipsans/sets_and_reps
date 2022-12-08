@@ -34,6 +34,7 @@ class HomePage extends StatelessWidget {
               child: WorkoutRecordPage(
                 recordedWorkouts: appState.workoutRecordList,
                 workouts: appState.workoutList,
+                exercises: appState.exreciseList,
               ),
             ),
           ],
@@ -55,13 +56,15 @@ class WorkoutRecord {
 }
 
 class WorkoutRecordPage extends StatefulWidget {
-  const WorkoutRecordPage({
-    super.key,
-    required this.recordedWorkouts,
-    required this.workouts,
-  });
+  const WorkoutRecordPage(
+      {super.key,
+      required this.recordedWorkouts,
+      required this.workouts,
+      required this.exercises});
   final List<WorkoutRecord> recordedWorkouts;
   final List<Workout> workouts;
+  final exercises;
+
   List<String> workoutNameList() {
     List<String> list = [];
     for (var count = 0; count < recordedWorkouts.length; count++)
@@ -86,6 +89,14 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
             widget.recordedWorkouts.first.time);
         exerciseDataList = exerciseData(exercisePos);
         exerciseCount = widget.recordedWorkouts[0].recordedExercises.length;
+        for (var value in widget.exercises) {
+          if (value.docID == exerciseName) {
+            exerciseName = value.name;
+            break;
+          }
+          if (widget.exercises.indexOf(value) == widget.exercises.length - 1)
+            exerciseName = '[Deleted]';
+        }
       }
       timeAgo = Jiffy(recordTime).fromNow();
       for (var name in nameList) {
@@ -99,16 +110,19 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
     List data = [];
     for (var workout in widget.recordedWorkouts[0].recordedExercises)
       if (exercisePos ==
-          widget.recordedWorkouts[0].recordedExercises.indexOf(workout))
+          widget.recordedWorkouts[0].recordedExercises.indexOf(workout)) {
         data.add(workout);
+        exerciseName = workout['exerciseID'] as String;
+      }
     return data;
   }
 
   List nameList = [];
   List exerciseDataList = [];
-  String lastWorkoutName = 'No data';
   var recordTime = new DateTime.now();
+  String lastWorkoutName = 'No completed workouts';
   var timeAgo = 'No data';
+  var exerciseName = '';
   int exercisePos = 0;
   int exerciseCount = 0;
 
@@ -122,9 +136,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
           children: [
             Expanded(
               flex: 2,
-              child: widget.recordedWorkouts.isNotEmpty
-                  ? upperCard()
-                  : Text('No Data'),
+              child: upperCard(),
             ),
             SizedBox(
               height: 10,
@@ -152,177 +164,222 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
 
   Widget upperCard() {
     updateData();
-    return Card(
-      elevation: 0,
-      color: Color.fromRGBO(68, 138, 255, 0.6),
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          width: 2,
-          color: Color.fromRGBO(68, 138, 255, 1),
-        ),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(
-            top: 20.0, bottom: 10.0, left: 20.0, right: 20.0),
-        child: Column(
-          children: [
-            Text(
-              '$lastWorkoutName ' +
-                  '(${exercisePos + 1}/'
-                      '$exerciseCount)',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+    return nameList.isNotEmpty
+        ? Card(
+            elevation: 0,
+            color: Color.fromRGBO(68, 138, 255, 0.6),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 2,
+                color: Color.fromRGBO(68, 138, 255, 1),
+              ),
+              borderRadius: BorderRadius.circular(24),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Pushups',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Expanded(
-                flex: 2,
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: <Widget>[
-                    for (var workout in exerciseDataList)
-                      for (var set in workout['sets'])
-                        Card(
-                          clipBehavior: Clip.hardEdge,
-                          child: SizedBox(
-                            height: 42,
-                            child: ListTile(
-                              tileColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Color.fromRGBO(68, 138, 255, 1)),
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0, bottom: 14),
-                                      child: Text(
-                                        "${workout['sets'].indexOf(set) + 1}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey),
-                                      ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 20.0, bottom: 10.0, left: 20.0, right: 20.0),
+              child: Column(
+                children: [
+                  Text(
+                    '$lastWorkoutName ' +
+                        '(${exercisePos + 1}/'
+                            '$exerciseCount)',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '$exerciseName',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Expanded(
+                      flex: 2,
+                      child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: <Widget>[
+                          for (var workout in exerciseDataList)
+                            for (var set in workout['sets'])
+                              Card(
+                                clipBehavior: Clip.hardEdge,
+                                child: SizedBox(
+                                  height: 42,
+                                  child: ListTile(
+                                    tileColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color:
+                                              Color.fromRGBO(68, 138, 255, 1)),
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    title: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20.0,
+                                                right: 20.0,
+                                                bottom: 14),
+                                            child: Text(
+                                              "${workout['sets'].indexOf(set) + 1}",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 14),
+                                              child: Text(
+                                                "${set['weight']} kgs",
+                                                textAlign: TextAlign.right,
+                                              )),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 14),
+                                              child: Text(
+                                                "${set['reps']} reps",
+                                                textAlign: TextAlign.right,
+                                              )),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 14),
-                                        child: Text(
-                                          "${set['weight']} kgs",
-                                          textAlign: TextAlign.right,
-                                        )),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 14),
-                                        child: Text(
-                                          "${set['reps']} reps",
-                                          textAlign: TextAlign.right,
-                                        )),
-                                  ),
-                                ],
+                                ),
                               ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: Ink(
+                            height: 40,
+                            width: 40,
+                            decoration: const ShapeDecoration(
+                              color: Colors.blue,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                                iconSize: 20,
+                                icon: const Icon(Icons.arrow_back_ios_rounded),
+                                color: Colors.white,
+                                onPressed: () {
+                                  setState(() {
+                                    if (exercisePos != 0) {
+                                      exercisePos--;
+                                    }
+                                  });
+                                }),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Ink(
+                            height: 40,
+                            width: 40,
+                            decoration: const ShapeDecoration(
+                              color: Colors.blue,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              iconSize: 20,
+                              icon: const Icon(Icons.arrow_forward_ios_rounded),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  if (exercisePos != exerciseCount - 1) {
+                                    exercisePos++;
+                                  }
+                                });
+                              },
                             ),
                           ),
                         ),
-                  ],
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Align(
+                      )
+                    ],
+                  ),
+                  Align(
                     alignment: Alignment.bottomRight,
-                    child: Ink(
-                      height: 40,
-                      width: 40,
-                      decoration: const ShapeDecoration(
-                        color: Colors.blue,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                          iconSize: 20,
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
-                          color: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              if (exercisePos != 0) {
-                                exercisePos--;
-                              }
-                            });
-                          }),
+                    child: Text(
+                      '$timeAgo',
+                      style:
+                          TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Ink(
-                      height: 40,
-                      width: 40,
-                      decoration: const ShapeDecoration(
-                        color: Colors.blue,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        iconSize: 20,
-                        icon: const Icon(Icons.arrow_forward_ios_rounded),
-                        color: Colors.white,
-                        onPressed: () {
-                          setState(() {
-                            if (exercisePos != exerciseCount - 1) {
-                              exercisePos++;
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                '$timeAgo',
-                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          )
+        : Card(
+            elevation: 0,
+            color: Color.fromRGBO(68, 138, 255, 0.6),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 2,
+                color: Color.fromRGBO(68, 138, 255, 1),
+              ),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 20.0, bottom: 10.0, left: 20.0, right: 20.0),
+              child: Column(
+                children: [
+                  Text('$lastWorkoutName',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                  Spacer(),
+                  Row(),
+                ],
+              ),
+            ),
+          );
   }
 
   Widget exerciseCardList() {
-    updateData();
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
+        Card(
+          clipBehavior: Clip.hardEdge,
+          child: ListTile(
+              tileColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Color.fromRGBO(68, 138, 255, 1)),
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              title: Center(
+                child: Text(
+                  'Workouts completed: ${widget.recordedWorkouts.length}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              )),
+        ),
         for (var workout in widget.recordedWorkouts)
           Card(
             clipBehavior: Clip.hardEdge,

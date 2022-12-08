@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gtk_flutter/pages/calander.dart';
+import 'package:gtk_flutter/pages/calender.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
@@ -130,7 +130,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   final screens = [
     HomePage(),
-    CalendarPage(),
+    CalenderPage(),
     WorkoutsPage(),
     ProfilePage(),
   ];
@@ -205,7 +205,8 @@ class ApplicationState extends ChangeNotifier {
   List<WorkoutRecord> get workoutRecordList => _workoutRecordList;
 
   StreamSubscription<QuerySnapshot>? _lastWorkoutRecordSubscription;
-  late WorkoutRecord finalWorkout;
+  late WorkoutRecord finalWorkout =
+      WorkoutRecord(workoutID: '', recordedExercises: [], time: 0);
 
   Future<void> init() async {
     await Firebase.initializeApp(

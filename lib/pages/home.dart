@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_start.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +34,7 @@ class HomePage extends StatelessWidget {
                 recordedWorkouts: appState.workoutRecordList,
                 workouts: appState.workoutList,
                 exercises: appState.exreciseList,
+                lastWorkout: appState.finalWorkout,
               ),
             ),
           ],
@@ -56,16 +56,19 @@ class WorkoutRecord {
 }
 
 class WorkoutRecordPage extends StatefulWidget {
-  const WorkoutRecordPage(
-      {super.key,
-      required this.recordedWorkouts,
-      required this.workouts,
-      required this.exercises});
+  const WorkoutRecordPage({
+    super.key,
+    required this.recordedWorkouts,
+    required this.workouts,
+    required this.exercises,
+    required this.lastWorkout,
+  });
   final List<WorkoutRecord> recordedWorkouts;
   final List<Workout> workouts;
   final exercises;
+  final lastWorkout;
 
-  List<String> workoutNameList() {
+  List<String> workoutNames() {
     List<String> list = [];
     for (var count = 0; count < recordedWorkouts.length; count++)
       for (var value in workouts) {
@@ -76,6 +79,13 @@ class WorkoutRecordPage extends StatefulWidget {
     return list;
   }
 
+  String lastWorkoutName() {
+    for (var value in workouts) {
+      if (lastWorkout.workoutID == value.docID) return value.name;
+    }
+    return 'Deleted';
+  }
+
   @override
   State<WorkoutRecordPage> createState() => _WorkoutRecordPageState();
 }
@@ -83,12 +93,12 @@ class WorkoutRecordPage extends StatefulWidget {
 class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   void updateData() {
     setState(() {
-      nameList = widget.workoutNameList();
-      if (widget.recordedWorkouts.isNotEmpty) {
-        recordTime = DateTime.fromMillisecondsSinceEpoch(
-            widget.recordedWorkouts.first.time);
+      nameList = widget.workoutNames();
+      if (widget.lastWorkout.workoutID != '') {
+        recordTime =
+            DateTime.fromMillisecondsSinceEpoch(widget.lastWorkout.time);
         exerciseDataList = exerciseData(exercisePos);
-        exerciseCount = widget.recordedWorkouts[0].recordedExercises.length;
+        exerciseCount = widget.lastWorkout.recordedExercises.length;
         for (var value in widget.exercises) {
           if (value.docID == exerciseName) {
             exerciseName = value.name;
@@ -99,18 +109,16 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
         }
       }
       timeAgo = Jiffy(recordTime).fromNow();
-      for (var name in nameList) {
-        lastWorkoutName = name;
-        break;
-      }
+      if (widget.lastWorkout.workoutID != '')
+        lastWorkoutName = widget.lastWorkoutName();
     });
   }
 
   List exerciseData(int exercisePos) {
     List data = [];
-    for (var workout in widget.recordedWorkouts[0].recordedExercises)
+    for (var workout in widget.lastWorkout.recordedExercises)
       if (exercisePos ==
-          widget.recordedWorkouts[0].recordedExercises.indexOf(workout)) {
+          widget.lastWorkout.recordedExercises.indexOf(workout)) {
         data.add(workout);
         exerciseName = workout['exerciseID'] as String;
       }
@@ -164,7 +172,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
 
   Widget upperCard() {
     updateData();
-    return nameList.isNotEmpty
+    return widget.lastWorkout.workoutID != ''
         ? Card(
             elevation: 0,
             color: Color.fromRGBO(68, 138, 255, 0.6),

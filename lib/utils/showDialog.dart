@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gtk_flutter/pages/workout_start.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 showExerciseDetails(context, workout) {

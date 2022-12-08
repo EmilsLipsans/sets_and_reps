@@ -85,7 +85,7 @@ class _CalenderPageState extends State<CalenderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TableCalendar - Events'),
+        title: Text('Calendar'),
       ),
       body: Column(
         children: [
@@ -101,6 +101,10 @@ class _CalenderPageState extends State<CalenderPage> {
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: CalendarStyle(
+              markerDecoration: BoxDecoration(
+                color: Color.fromRGBO(68, 138, 255, 0.6),
+                shape: BoxShape.circle,
+              ),
               // Use `CalendarStyle` to customize the UI
               outsideDaysVisible: false,
             ),

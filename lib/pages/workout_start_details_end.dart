@@ -91,11 +91,11 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                           width: 2,
                           color: Color.fromRGBO(68, 138, 255, 1),
                         ),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       child: ListTile(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                         title: Row(
                           children: [

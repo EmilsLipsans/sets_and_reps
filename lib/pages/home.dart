@@ -181,7 +181,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                 width: 2,
                 color: Color.fromRGBO(68, 138, 255, 1),
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -384,7 +384,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
               title: Center(
                 child: Text(
                   'Workouts completed: ${widget.recordedWorkouts.length}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16),
                 ),
               )),
         ),

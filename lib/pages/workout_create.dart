@@ -8,7 +8,7 @@ import 'package:gtk_flutter/pages/exercise_update.dart';
 import 'package:gtk_flutter/pages/workout_exercises.dart';
 
 import 'package:gtk_flutter/utils/dropdown.dart';
-import 'package:gtk_flutter/utils/workout_exercises.dart';
+
 import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 // new

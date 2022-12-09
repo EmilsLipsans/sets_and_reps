@@ -132,15 +132,21 @@ class _CalenderPageState extends State<CalenderPage> {
                     return Container(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12.0,
-                        vertical: 4.0,
                       ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
+                      child: Card(
+                        clipBehavior: Clip.hardEdge,
+                        child: ListTile(
+                          onTap: () => print('${value[index].id}'),
+                          title: Center(
+                            child: Text('${value[index].title}'),
+                          ),
+                          tileColor: Color.fromRGBO(68, 138, 255, 0.6),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Color.fromRGBO(68, 138, 255, 1)),
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                        ),
                       ),
                     );
                   },

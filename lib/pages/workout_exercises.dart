@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/src/widgets.dart';
-import 'package:gtk_flutter/utils/workout_exercises.dart';
 
 class WorkoutExercisesRoute extends StatefulWidget {
   @override
@@ -9,6 +8,16 @@ class WorkoutExercisesRoute extends StatefulWidget {
   final list;
   final ValueChanged<int> incrementCounter;
   _WorkoutExercisesRouteState createState() => _WorkoutExercisesRouteState();
+}
+
+class WorkoutExercises {
+  String name;
+  final docID;
+
+  WorkoutExercises({
+    required this.name,
+    required this.docID,
+  });
 }
 
 class _WorkoutExercisesRouteState extends State<WorkoutExercisesRoute> {

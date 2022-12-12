@@ -97,14 +97,14 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
     });
   }
 
-  void updateData() {
+  void updateUpperCard() {
     setState(() {
-      nameList = widget.workoutNames();
       if (widget.lastWorkout.workoutID != '') {
         recordTime =
             DateTime.fromMillisecondsSinceEpoch(widget.lastWorkout.time);
         exerciseDataList = exerciseData(exercisePos);
         exerciseCount = widget.lastWorkout.recordedExercises.length;
+        if (exercisePos > exerciseCount - 1) exercisePos = 0;
         for (var value in widget.exercises) {
           if (value.docID == exerciseName) {
             exerciseName = value.name;
@@ -117,6 +117,12 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
       timeAgo = Jiffy(recordTime).fromNow();
       if (widget.lastWorkout.workoutID != '')
         lastWorkoutName = widget.lastWorkoutName();
+    });
+  }
+
+  void updateCardList() {
+    setState(() {
+      nameList = widget.workoutNames();
     });
   }
 
@@ -177,7 +183,8 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget upperCard() {
-    updateData();
+    print('lowercard Rebuild $exercisePos');
+    updateUpperCard();
     return widget.lastWorkout.workoutID != ''
         ? Card(
             elevation: 0,
@@ -376,6 +383,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget exerciseCardList() {
+    updateCardList();
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[

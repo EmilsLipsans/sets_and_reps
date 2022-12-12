@@ -91,6 +91,12 @@ class WorkoutRecordPage extends StatefulWidget {
 }
 
 class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
+  void newWorkoutAdded() {
+    setState(() {
+      exercisePos = 0;
+    });
+  }
+
   void updateData() {
     setState(() {
       nameList = widget.workoutNames();
@@ -291,7 +297,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                                 color: Colors.white,
                                 onPressed: () {
                                   setState(() {
-                                    if (exercisePos != 0) {
+                                    if (exercisePos > 0) {
                                       exercisePos--;
                                     }
                                   });
@@ -318,7 +324,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                               color: Colors.white,
                               onPressed: () {
                                 setState(() {
-                                  if (exercisePos != exerciseCount - 1) {
+                                  if (exercisePos < exerciseCount - 1) {
                                     exercisePos++;
                                   }
                                 });

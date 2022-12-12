@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gtk_flutter/pages/calender.dart';
+import 'package:gtk_flutter/pages/calendar.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
@@ -220,11 +220,12 @@ class ApplicationState extends ChangeNotifier {
       if (user != null) {
         _loggedIn = true;
 
-        loadWorkouts();
-        loadWorkoutRecords();
-        loadLastWorkoutRecord();
+        loadWorkouts(user);
+        loadWorkoutRecords(user);
+        loadLastWorkoutRecord(user);
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
+            .where('userId', isEqualTo: user.uid)
             .orderBy('timestamp', descending: true)
             .snapshots()
             .listen((snapshot) {
@@ -256,9 +257,10 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  loadWorkouts() {
+  loadWorkouts(user) {
     _workoutListSubscription = FirebaseFirestore.instance
         .collection('workouts')
+        .where('userId', isEqualTo: user.uid)
         .orderBy("favorite", descending: true)
         .orderBy('timestamp', descending: true)
         .snapshots()
@@ -279,9 +281,10 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  loadLastWorkoutRecord() {
+  loadLastWorkoutRecord(user) {
     _lastWorkoutRecordSubscription = FirebaseFirestore.instance
         .collection('workoutRecords')
+        .where('userId', isEqualTo: user.uid)
         .orderBy('timestamp', descending: true)
         .limit(1)
         .snapshots()
@@ -314,10 +317,11 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  loadWorkoutRecords() {
+  loadWorkoutRecords(user) {
     final twoWeeks = DateTime.now().millisecondsSinceEpoch - (2 * 604800000);
     _workoutRecordListSubscription = FirebaseFirestore.instance
         .collection('workoutRecords')
+        .where('userId', isEqualTo: user.uid)
         .where('timestamp', isGreaterThan: twoWeeks)
         .orderBy('timestamp', descending: true)
         .snapshots()
@@ -363,7 +367,6 @@ class ApplicationState extends ChangeNotifier {
       'workoutID': workoutID,
       'recordedExercises': recordList,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
@@ -392,7 +395,6 @@ class ApplicationState extends ChangeNotifier {
       'exerciseRef': listOfIDs,
       'favorite': false,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
@@ -419,7 +421,6 @@ class ApplicationState extends ChangeNotifier {
       'name': workout,
       'exerciseRef': listOfIDs,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
@@ -438,7 +439,6 @@ class ApplicationState extends ChangeNotifier {
       'url': url,
       'category': category,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
@@ -458,7 +458,6 @@ class ApplicationState extends ChangeNotifier {
       'url': url,
       'category': category,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'username': FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }

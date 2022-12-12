@@ -19,15 +19,15 @@ class Event {
 /// Example events.
 ///
 /// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
+var kEvents = LinkedHashMap<DateTime, List<Event>>(
   equals: isSameDay,
   hashCode: getHashCode,
 )..addAll(_kEventSource);
 
-final _kEventSource = Map.fromIterable(List.generate(10, (index) => index),
+var _kEventSource = Map.fromIterable(List.generate(10, (index) => index),
     key: (item) => DateTime.utc(2022, 12, 24),
     value: (item) =>
-        List.generate(1, (index) => Event('WorkoutName', "workoutID")));
+        List.generate(2, (index) => Event('WorkoutName', "workoutID1")));
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
@@ -45,17 +45,3 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
-
-String capitalize(String value) {
-  var result = value[0].toUpperCase();
-  bool cap = true;
-  for (int i = 1; i < value.length; i++) {
-    if (value[i - 1] == " " && cap == true) {
-      result = result + value[i].toUpperCase();
-    } else {
-      result = result + value[i];
-      cap = false;
-    }
-  }
-  return result;
-}

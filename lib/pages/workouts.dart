@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/src/widgets.dart';
+import 'package:gtk_flutter/utils/nameLists.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutsPage extends StatefulWidget {
@@ -62,6 +64,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
                       favoriteWorkout: (docID, favorite) =>
                           appState.favoriteWorkout(docID, favorite),
                       workouts: appState.workoutList,
+                      exercises: appState.exreciseList,
                     ),
                   ),
                 ],
@@ -114,8 +117,10 @@ class WorkoutPage extends StatefulWidget {
       {super.key,
       required this.workouts,
       required this.deleteWorkout,
-      required this.favoriteWorkout});
+      required this.favoriteWorkout,
+      required this.exercises});
   final List<Workout> workouts;
+  final List<Exrecises> exercises;
   final FutureOr<void> Function(String docID) deleteWorkout;
   final FutureOr<void> Function(String docID, bool favorite) favoriteWorkout;
   @override
@@ -175,6 +180,10 @@ class _WorkoutState extends State<WorkoutPage> {
                       onPressed: () {}),
                   PopupMenuButton(
                     onSelected: (value) {
+                      if (value == 0) {
+                        showWorkoutDetails(context, workout,
+                            updateList(workout, widget.exercises));
+                      }
                       if (value == 1) {
                         Navigator.push(
                           context,

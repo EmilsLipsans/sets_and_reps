@@ -324,13 +324,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                           final snackBar = SnackBar(
                             content: widget.createNewWorkout
                                 ? Text('Workout Saved')
-                                : Text('Workout Update Saved'),
-                            action: SnackBarAction(
-                              label: 'Show Workout',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
+                                : Text('Workout Edited'),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }

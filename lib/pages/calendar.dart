@@ -1,16 +1,50 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:gtk_flutter/main.dart';
+import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/utils/calendar_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalenderPage extends StatefulWidget {
+class CalendarPage extends StatelessWidget {
+  const CalendarPage({super.key});
+
   @override
-  _CalenderPageState createState() => _CalenderPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Calendar'),
+      ),
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) => Column(
+          children: [
+            Expanded(
+              child: CalendarBody(
+                recordedWorkouts: appState.workoutRecordList,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _CalenderPageState extends State<CalenderPage> {
+class CalendarBody extends StatefulWidget {
+  const CalendarBody({
+    super.key,
+    required this.recordedWorkouts,
+  });
+  final List<WorkoutRecord> recordedWorkouts;
+  @override
+  _CalendarPageBodyState createState() => _CalendarPageBodyState();
+}
+
+class _CalendarPageBodyState extends State<CalendarBody> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -19,7 +53,10 @@ class _CalenderPageState extends State<CalenderPage> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
-
+  var _kEventSource = Map.fromIterable(List.generate(10, (index) => index),
+      key: (item) => DateTime.utc(2022, 12, 24),
+      value: (item) =>
+          List.generate(2, (index) => Event('WorkoutName', "workoutID1")));
   @override
   void initState() {
     super.initState();
@@ -83,79 +120,74 @@ class _CalenderPageState extends State<CalenderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Calendar'),
-      ),
-      body: Column(
-        children: [
-          TableCalendar<Event>(
-            firstDay: kFirstDay,
-            lastDay: kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: _calendarFormat,
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: CalendarStyle(
-              markerDecoration: BoxDecoration(
-                color: Color.fromRGBO(68, 138, 255, 0.6),
-                shape: BoxShape.circle,
-              ),
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: false,
+    return Column(
+      children: [
+        TableCalendar<Event>(
+          firstDay: kFirstDay,
+          lastDay: kLastDay,
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          rangeStartDay: _rangeStart,
+          rangeEndDay: _rangeEnd,
+          calendarFormat: _calendarFormat,
+          rangeSelectionMode: _rangeSelectionMode,
+          eventLoader: _getEventsForDay,
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          calendarStyle: CalendarStyle(
+            markerDecoration: BoxDecoration(
+              color: Color.fromRGBO(68, 138, 255, 0.6),
+              shape: BoxShape.circle,
             ),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
+            // Use `CalendarStyle` to customize the UI
+            outsideDaysVisible: false,
           ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                      ),
-                      child: Card(
-                        clipBehavior: Clip.hardEdge,
-                        child: ListTile(
-                          onTap: () => print('${value[index].id}'),
-                          title: Center(
-                            child: Text('${value[index].title}'),
-                          ),
-                          tileColor: Color.fromRGBO(68, 138, 255, 0.6),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: Color.fromRGBO(68, 138, 255, 1)),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
+          onDaySelected: _onDaySelected,
+          onRangeSelected: _onRangeSelected,
+          onFormatChanged: (format) {
+            if (_calendarFormat != format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            }
+          },
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+          },
+        ),
+        const SizedBox(height: 8.0),
+        Expanded(
+          child: ValueListenableBuilder<List<Event>>(
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) {
+              return ListView.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                    ),
+                    child: Card(
+                      clipBehavior: Clip.hardEdge,
+                      child: ListTile(
+                        onTap: () => print('${value[index].id}'),
+                        title: Center(
+                          child: Text('${value[index].title}'),
+                        ),
+                        tileColor: Color.fromRGBO(68, 138, 255, 0.6),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Color.fromRGBO(68, 138, 255, 1)),
+                          borderRadius: BorderRadius.circular(4.0),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

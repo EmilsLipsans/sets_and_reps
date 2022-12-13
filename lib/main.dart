@@ -130,7 +130,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   final screens = [
     HomePage(),
-    CalenderPage(),
+    CalendarPage(),
     WorkoutsPage(),
     ProfilePage(),
   ];

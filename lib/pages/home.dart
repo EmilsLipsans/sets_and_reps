@@ -183,7 +183,6 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget upperCard() {
-    print('lowercard Rebuild $exercisePos');
     updateUpperCard();
     return widget.lastWorkout.workoutID != ''
         ? Card(

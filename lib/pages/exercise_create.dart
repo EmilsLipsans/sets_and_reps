@@ -209,7 +209,6 @@ class _NewExerciseState extends State<NewExercise> {
                           _nameController.clear();
                           _urlController.clear();
                           _descriptionController.clear();
-                          Navigator.pop(context);
                           final snackBar = SnackBar(
                             content: const Text('Exercise Saved'),
                           );

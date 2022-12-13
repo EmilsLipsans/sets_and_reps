@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
+import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
+import 'package:gtk_flutter/utils/nameLists.dart';
+import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
 
 class StartWorkoutRoute extends StatelessWidget {
@@ -19,6 +22,7 @@ class StartWorkoutRoute extends StatelessWidget {
             Expanded(
               child: StartWorkoutPage(
                 workouts: appState.workoutList,
+                exercises: appState.exreciseList,
               ),
             ),
           ],
@@ -29,11 +33,10 @@ class StartWorkoutRoute extends StatelessWidget {
 }
 
 class StartWorkoutPage extends StatefulWidget {
-  const StartWorkoutPage({
-    super.key,
-    required this.workouts,
-  });
+  const StartWorkoutPage(
+      {super.key, required this.workouts, required this.exercises});
   final List<Workout> workouts;
+  final List<Exrecises> exercises;
   @override
   State<StartWorkoutPage> createState() => _StartWorkoutPageState();
 }
@@ -110,7 +113,12 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
               },
               title: Text('${workout.name}'),
               secondary: PopupMenuButton(
-                onSelected: (value) {},
+                onSelected: (value) {
+                  if (value == 0) {
+                    showWorkoutDetails(context, workout,
+                        updateList(workout, widget.exercises));
+                  }
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),

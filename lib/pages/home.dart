@@ -70,12 +70,14 @@ class WorkoutRecordPage extends StatefulWidget {
 
   List<String> workoutNames() {
     List<String> list = [];
-    for (var count = 0; count < recordedWorkouts.length; count++)
+    for (var count = 0; count < recordedWorkouts.length; count++) {
       for (var value in workouts) {
         if (value.docID == recordedWorkouts[count].workoutID)
           list.add(value.name);
         continue;
       }
+      list.add('Deleted');
+    }
     return list;
   }
 

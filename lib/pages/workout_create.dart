@@ -371,12 +371,6 @@ class _NewWorkoutState extends State<NewWorkout> {
           onSelected: (value) {
             if (value == 0) {
               showExerciseDetails(context, newWorkout);
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) =>
-              //           ExerciseDetailsRoute(workout: workout, items: items),
-              //     ));
             }
             if (value == 1) {
               Navigator.push(
@@ -387,7 +381,30 @@ class _NewWorkoutState extends State<NewWorkout> {
               );
             }
             if (value == 2) {
-              widget.deleteExercise(newWorkout.docID);
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Confirm delete'),
+                  content: Text(
+                      'Deleting ${newWorkout.name} may disrupt workouts with this exercise" Are you sure you want to delete ${newWorkout.name}? '),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        widget.deleteExercise(newWorkout.docID);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
           },
           shape: RoundedRectangleBorder(

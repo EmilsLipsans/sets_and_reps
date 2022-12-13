@@ -198,7 +198,30 @@ class _WorkoutState extends State<WorkoutPage> {
                         );
                       }
                       if (value == 2) {
-                        widget.deleteWorkout(workout.docID);
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Confirm delete'),
+                            content: Text(
+                                'Deleting ${workout.name} will change all relevant record names to \"Deleted\" Are you sure you want to delete ${workout.name}? '),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  widget.deleteWorkout(workout.docID);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                     },
                     shape: RoundedRectangleBorder(

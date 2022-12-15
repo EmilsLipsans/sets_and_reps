@@ -34,6 +34,7 @@ dependencies:
   table_calendar: ^3.0.8
   dropdown_button2: ^1.8.9
   
+  
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -48,6 +49,7 @@ dependencies:
   youtube_player_flutter: ^8.1.1
   quantity_input: ^1.0.2
   jiffy: ^5.0.0
+  auth_buttons: ^3.0.0
 
   
 dev_dependencies:
@@ -73,6 +75,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/codelab.png
+    - assets/logos/facebook.png
+    - assets/logos/google.jpg
+    - assets/logos/app_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

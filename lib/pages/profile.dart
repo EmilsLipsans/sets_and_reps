@@ -22,13 +22,13 @@ class ProfilePageState extends State<ProfilePage> {
         actions: [
           SignedOutAction(
             ((context) {
-              Navigator.of(context).popUntil(ModalRoute.withName('/home'));
+              Navigator.popAndPushNamed(context, '/home');
             }),
           ),
         ],
       );
     } else {
-      return LoggedOut();
+      return Text('Something went wrong');
     }
   }
 

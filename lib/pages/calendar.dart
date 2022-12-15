@@ -1,8 +1,6 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/home.dart';

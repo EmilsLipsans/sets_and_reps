@@ -17,8 +17,8 @@ class WorkoutsPage extends StatefulWidget {
 class _MyTabbedPageState extends State<WorkoutsPage>
     with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'SAVED'),
-    Tab(text: 'ONLINE'),
+    Tab(text: 'CUSTOM'),
+    Tab(text: 'BUILT-IN'),
   ];
 
   late TabController _tabController;
@@ -52,7 +52,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
       body: TabBarView(
         controller: _tabController,
         children: myTabs.map((Tab tab) {
-          if (tab.text == 'ONLINE') {
+          if (tab.text == 'BUILT-IN') {
             return noList();
           } else {
             return Consumer<ApplicationState>(

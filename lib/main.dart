@@ -8,6 +8,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gtk_flutter/pages/calendar.dart';
+import 'package:gtk_flutter/pages/login_screen.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
@@ -147,36 +148,43 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        iconSize: 28,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: 'Workouts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        onTap: _onItemTapped,
-      ),
-      // floatingActionButton: floatingButtons[_selectedIndex],
-      body: screens[_selectedIndex],
+    return Selector<ApplicationState, bool>(
+      selector: (_, appState) => appState.loggedIn,
+      builder: (_, loggedIn, __) {
+        return loggedIn
+            ? Scaffold(
+                bottomNavigationBar: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  iconSize: 28,
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.calendar_month),
+                      label: 'Calendar',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.fitness_center),
+                      label: 'Workouts',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.account_circle),
+                      label: 'Profile',
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: Colors.blueAccent,
+                  onTap: _onItemTapped,
+                ),
+                // floatingActionButton: floatingButtons[_selectedIndex],
+                body: screens[_selectedIndex],
+              )
+            : LoginScreen();
+      },
     );
   }
 }

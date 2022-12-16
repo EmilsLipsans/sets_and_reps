@@ -1,27 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-final kHintTextStyle = TextStyle(
-  color: Colors.white54,
-  fontFamily: 'OpenSans',
-);
-
-final kLabelStyle = TextStyle(
-  color: Colors.white,
-  fontWeight: FontWeight.bold,
-  fontFamily: 'OpenSans',
-);
-
-final kBoxDecorationStyle = BoxDecoration(
-  color: Color(0xFF6CA8F1),
-  borderRadius: BorderRadius.circular(10.0),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black12,
-      blurRadius: 6.0,
-      offset: Offset(0, 2),
-    ),
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
   ],
 );
 
@@ -31,6 +16,32 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  GoogleSignInAccount? _currentUser;
+  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+  @override
+  void initState() {
+    _handleSignOut();
+    super.initState();
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   Widget _buildSignInWithText() {
     return Column(
       children: <Widget>[
@@ -44,7 +55,11 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: 10.0),
         Text(
           'Continue with',
-          style: kLabelStyle,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+          ),
         ),
       ],
     );
@@ -57,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           GoogleAuthButton(
-            onPressed: () {},
+            onPressed: () {
+              signInWithGoogle();
+            },
             style: AuthButtonStyle(
               buttonType: AuthButtonType.icon,
             ),
@@ -78,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GoogleSignInAccount? user = _currentUser;
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,

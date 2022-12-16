@@ -141,6 +141,7 @@ class MyHomePageState extends State<MyHomePage> {
     'Workouts',
     'Profile',
   ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

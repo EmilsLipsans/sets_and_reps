@@ -42,60 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Widget _buildSignInWithText() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '- OR -',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(height: 10.0),
-        Text(
-          'Continue with',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialBtnRow() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          GoogleAuthButton(
-            onPressed: () {
-              signInWithGoogle();
-            },
-            style: AuthButtonStyle(
-              buttonType: AuthButtonType.icon,
-            ),
-          ),
-          SizedBox(
-            width: 40,
-          ),
-          FacebookAuthButton(
-            onPressed: () {},
-            style: AuthButtonStyle(
-              buttonType: AuthButtonType.icon,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final GoogleSignInAccount? user = _currentUser;
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -131,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Spacer(),
                       Text(
                         'Sets & Reps',
                         style: TextStyle(
@@ -139,13 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Spacer(),
                       SizedBox(height: 30.0),
                       Text(
                         "Let's start recording!",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 28.0,
+                          fontSize: 18.0,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -172,8 +120,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         height: 20.0,
                       ),
-                      _buildSignInWithText(),
-                      _buildSocialBtnRow(),
+                      GoogleAuthButton(
+                        onPressed: () {
+                          signInWithGoogle();
+                        },
+                        style: AuthButtonStyle(
+                          buttonColor: Colors.white,
+                          borderWidth: 3.0,
+                          width: double.infinity,
+                          height: 50.0,
+                          iconSize: 28.0,
+                          separator: 10.0,
+                          progressIndicatorType: AuthIndicatorType.circular,
+                          visualDensity: VisualDensity.standard,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 100.0,
+                      ),
                     ],
                   ),
                 ),

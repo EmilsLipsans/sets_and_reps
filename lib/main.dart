@@ -210,8 +210,8 @@ class ApplicationState extends ChangeNotifier {
   List<Workout> get workoutList => _workoutList;
 
   StreamSubscription<QuerySnapshot>? _workoutRecordListSubscription;
-  List<WorkoutRecord> _workoutRecordList = [];
-  List<WorkoutRecord> get workoutRecordList => _workoutRecordList;
+  List<WorkoutRecord> _latestWorkoutRecordList = [];
+  List<WorkoutRecord> get latestWorkoutRecordList => _latestWorkoutRecordList;
 
   StreamSubscription<QuerySnapshot>? _lastWorkoutRecordSubscription;
   late WorkoutRecord finalWorkout =
@@ -256,7 +256,7 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = false;
         _exreciseList = [];
         _workoutList = [];
-        _workoutRecordList = [];
+        _latestWorkoutRecordList = [];
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
         _workoutRecordListSubscription?.cancel();
@@ -335,7 +335,7 @@ class ApplicationState extends ChangeNotifier {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {
-      _workoutRecordList = [];
+      _latestWorkoutRecordList = [];
       List recordedExerciseList = [];
       List sets = [];
       for (final document in snapshot.docs) {
@@ -352,7 +352,7 @@ class ApplicationState extends ChangeNotifier {
           });
           sets.clear();
         }
-        _workoutRecordList.add(
+        _latestWorkoutRecordList.add(
           WorkoutRecord(
             workoutID: document.data()['workoutID'],
             recordedExercises: List.from(recordedExerciseList),

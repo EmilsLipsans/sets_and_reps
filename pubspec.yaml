@@ -51,6 +51,7 @@ dependencies:
   jiffy: ^5.0.0
   auth_buttons: ^3.0.0
   google_sign_in: ^5.4.2
+  flutter_facebook_auth: ^5.0.6
 
   
 dev_dependencies:

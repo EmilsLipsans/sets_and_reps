@@ -22,7 +22,7 @@ class CalendarPage extends StatelessWidget {
           children: [
             Expanded(
               child: CalendarBody(
-                recordedWorkouts: appState.workoutRecordList,
+                recordedWorkouts: appState.latestWorkoutRecordList,
               ),
             ),
           ],

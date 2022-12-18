@@ -406,8 +406,7 @@ class ApplicationState extends ChangeNotifier {
       }
       var _kEventSource = Map.fromIterable(_workoutRecordList,
           key: (item) => DateTime.fromMillisecondsSinceEpoch(item.eventDate),
-          value: (item) => List.generate(
-              item.eventList.length, (index) => Event('WorkoutName', "index")));
+          value: (item) => item.eventList as List<Event>);
       kEvents..addAll(_kEventSource);
       _workoutRecordList.clear();
       notifyListeners();

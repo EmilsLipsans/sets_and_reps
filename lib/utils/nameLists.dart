@@ -29,7 +29,6 @@ List<String> workoutNames(recordedWorkouts, workouts) {
         list.add('[Deleted]');
       }
     }
-    print('workouts $workouts');
   }
   return list;
 }

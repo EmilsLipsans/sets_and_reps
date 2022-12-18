@@ -13,11 +13,10 @@ import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
-import 'package:gtk_flutter/utils/calendar_utils.dart';
 import 'package:provider/provider.dart';
 import 'dart:collection';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:intl/intl.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -343,7 +342,9 @@ class ApplicationState extends ChangeNotifier {
         .snapshots()
         .listen((snapshot) {
       _latestWorkoutRecordList = [];
-      List _workoutRecordList = [];
+      var eventDate = 0;
+      List<CalendarEvent> _workoutRecordList = [];
+      List<Event> daysEvents = [];
       List recordedExerciseList = [];
       List sets = [];
       for (final document in snapshot.docs) {
@@ -360,7 +361,7 @@ class ApplicationState extends ChangeNotifier {
           });
           sets.clear();
         }
-        if (document.data()['timestamp'] > twoWeeks)
+        if (document.data()['timestamp'] > twoWeeks) {
           _latestWorkoutRecordList.add(
             WorkoutRecord(
               workoutID: document.data()['workoutID'],
@@ -368,21 +369,45 @@ class ApplicationState extends ChangeNotifier {
               time: document.data()['timestamp'] as int,
             ),
           );
-
-        _workoutRecordList.add(
-          WorkoutRecord(
-            workoutID: document.data()['workoutID'],
-            recordedExercises: List.from(recordedExerciseList),
-            time: document.data()['timestamp'] as int,
-          ),
-        );
+        }
+        if (DateFormat.MMMd().format(DateTime.fromMillisecondsSinceEpoch(
+                    document.data()['timestamp'])) ==
+                DateFormat.MMMd()
+                    .format(DateTime.fromMillisecondsSinceEpoch(eventDate)) ||
+            snapshot.docs.indexOf(document) == 0) {
+          daysEvents.add(Event(
+            document.data()['workoutID'],
+            'name',
+          ));
+          eventDate = document.data()['timestamp'];
+        } else {
+          _workoutRecordList.add(
+            CalendarEvent(
+              eventDate,
+              List.from(daysEvents),
+            ),
+          );
+          print("days event $daysEvents");
+          daysEvents.clear();
+          daysEvents.add(Event(
+            document.data()['workoutID'],
+            'name',
+          ));
+          eventDate = document.data()['timestamp'];
+        }
 
         recordedExerciseList.clear();
       }
+      for (var item in _workoutRecordList) {
+        print(item.eventList.length);
+        for (var event in item.eventList)
+          print(
+              "Workouts Events: ${event.title} ${item.eventList.indexOf(event) + 1}");
+      }
       var _kEventSource = Map.fromIterable(_workoutRecordList,
-          key: (item) => DateTime.fromMillisecondsSinceEpoch(item.time),
+          key: (item) => DateTime.fromMillisecondsSinceEpoch(item.eventDate),
           value: (item) => List.generate(
-              1, (index) => Event('${item.workoutID}', '${item.workoutID}')));
+              item.eventList.length, (index) => Event('WorkoutName', "index")));
       kEvents..addAll(_kEventSource);
       _workoutRecordList.clear();
       notifyListeners();

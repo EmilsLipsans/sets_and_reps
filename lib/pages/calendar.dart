@@ -29,16 +29,16 @@ class Event {
   final String title;
   final String id;
 
-  const Event(this.title, this.id);
+  Event(this.title, this.id);
 
   @override
   String toString() => title;
 }
 
 class CalendarEvent {
-  final DateTime time;
+  final int eventDate;
   final List<Event> eventList;
-  const CalendarEvent(this.time, this.eventList);
+  CalendarEvent(this.eventDate, this.eventList);
 }
 
 class CalendarPage extends StatelessWidget {

@@ -373,7 +373,6 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
 
   Widget exerciseCardList() {
     int count = 0;
-    print('name list: $nameList');
     updateCardList();
     return ListView(
       scrollDirection: Axis.vertical,

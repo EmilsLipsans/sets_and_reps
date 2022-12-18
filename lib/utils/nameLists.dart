@@ -16,3 +16,20 @@ List<Exrecises> updateList(Workout workout, List<Exrecises> exercises) {
     }
   return list;
 }
+
+List<String> workoutNames(recordedWorkouts, workouts) {
+  List<String> list = [];
+  for (var count = 0; count < recordedWorkouts.length; count++) {
+    for (var value in workouts) {
+      if (value.docID == recordedWorkouts[count].workoutID) {
+        list.add(value.name);
+        break;
+      }
+      if (workouts.indexOf(value) == workouts.length - 1) {
+        list.add('[Deleted]');
+      }
+    }
+    print('workouts $workouts');
+  }
+  return list;
+}

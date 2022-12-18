@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_start.dart';
+import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class HomePage extends StatelessWidget {
           children: [
             Expanded(
               child: WorkoutRecordPage(
-                recordedWorkouts: appState.workoutRecordList,
+                recordedWorkouts: appState.latestWorkoutRecordList,
                 workouts: appState.workoutList,
                 exercises: appState.exreciseList,
                 lastWorkout: appState.finalWorkout,
@@ -67,19 +68,6 @@ class WorkoutRecordPage extends StatefulWidget {
   final List<Workout> workouts;
   final exercises;
   final lastWorkout;
-
-  List<String> workoutNames() {
-    List<String> list = [];
-    for (var count = 0; count < recordedWorkouts.length; count++) {
-      for (var value in workouts) {
-        if (value.docID == recordedWorkouts[count].workoutID)
-          list.add(value.name);
-        continue;
-      }
-      list.add('Deleted');
-    }
-    return list;
-  }
 
   String lastWorkoutName() {
     for (var value in workouts) {
@@ -124,7 +112,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
 
   void updateCardList() {
     setState(() {
-      nameList = widget.workoutNames();
+      nameList = workoutNames(widget.recordedWorkouts, widget.workouts);
     });
   }
 
@@ -384,6 +372,8 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
   }
 
   Widget exerciseCardList() {
+    int count = 0;
+    print('name list: $nameList');
     updateCardList();
     return ListView(
       scrollDirection: Axis.vertical,
@@ -425,7 +415,7 @@ class _WorkoutRecordPageState extends State<WorkoutRecordPage> {
                   Expanded(
                       flex: 2,
                       child: Text(
-                        "${nameList[widget.recordedWorkouts.indexOf(workout)]}",
+                        "${nameList[count++]}",
                         textAlign: TextAlign.left,
                       )),
                 ],

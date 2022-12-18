@@ -135,12 +135,10 @@ showWorkoutDetails(context, workout, exerciseList) {
                             indent: 0,
                             endIndent: 0,
                           ),
-                          SizedBox(height: 15),
-                          Text("Exercises"),
                         ]),
                       ),
                       Expanded(
-                        flex: 4,
+                        flex: 6,
                         child: ListView(
                           scrollDirection: Axis.vertical,
                           children: <Widget>[

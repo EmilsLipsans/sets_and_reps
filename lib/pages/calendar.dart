@@ -8,6 +8,39 @@ import 'package:gtk_flutter/utils/calendar_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
+}
+
+/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+List<DateTime> daysInRange(DateTime first, DateTime last) {
+  final dayCount = last.difference(first).inDays + 1;
+  return List.generate(
+    dayCount,
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
+  );
+}
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+class Event {
+  final String title;
+  final String id;
+
+  const Event(this.title, this.id);
+
+  @override
+  String toString() => title;
+}
+
+class CalendarEvent {
+  final DateTime time;
+  final List<Event> eventList;
+  const CalendarEvent(this.time, this.eventList);
+}
+
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
 
@@ -22,7 +55,7 @@ class CalendarPage extends StatelessWidget {
           children: [
             Expanded(
               child: CalendarBody(
-                recordedWorkouts: appState.latestWorkoutRecordList,
+                kEvents: appState.kEvents,
               ),
             ),
           ],
@@ -35,9 +68,9 @@ class CalendarPage extends StatelessWidget {
 class CalendarBody extends StatefulWidget {
   const CalendarBody({
     super.key,
-    required this.recordedWorkouts,
+    required this.kEvents,
   });
-  final List<WorkoutRecord> recordedWorkouts;
+  final kEvents;
   @override
   _CalendarPageBodyState createState() => _CalendarPageBodyState();
 }
@@ -51,10 +84,7 @@ class _CalendarPageBodyState extends State<CalendarBody> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
-  var _kEventSource = Map.fromIterable(List.generate(10, (index) => index),
-      key: (item) => DateTime.utc(2022, 12, 24),
-      value: (item) =>
-          List.generate(2, (index) => Event('WorkoutName', "workoutID1")));
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +101,7 @@ class _CalendarPageBodyState extends State<CalendarBody> {
 
   List<Event> _getEventsForDay(DateTime day) {
     // Implementation example
-    return kEvents[day] ?? [];
+    return widget.kEvents[day] ?? [];
   }
 
   List<Event> _getEventsForRange(DateTime start, DateTime end) {

@@ -386,7 +386,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                 builder: (BuildContext context) => AlertDialog(
                   title: const Text('Confirm delete'),
                   content: Text(
-                      'Deleting ${newWorkout.name} may disrupt workouts with this exercise Are you sure you want to delete ${newWorkout.name}? '),
+                      'Deleting ${newWorkout.name} may disrupt workouts with this exercise. Are you sure you want to delete ${newWorkout.name}? '),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.pop(context),

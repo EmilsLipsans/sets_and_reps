@@ -203,7 +203,7 @@ class _WorkoutState extends State<WorkoutPage> {
                           builder: (BuildContext context) => AlertDialog(
                             title: const Text('Confirm delete'),
                             content: Text(
-                                'Deleting ${workout.name} will change all relevant record names to \"Deleted\" Are you sure you want to delete ${workout.name}? '),
+                                'Deleting ${workout.name} will change all relevant record names to \"Deleted\". Are you sure you want to delete ${workout.name}? '),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () => Navigator.pop(context),

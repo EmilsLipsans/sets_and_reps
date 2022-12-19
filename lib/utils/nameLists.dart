@@ -32,3 +32,8 @@ List<String> workoutNames(recordedWorkouts, workouts) {
   }
   return list;
 }
+
+String workoutName(workoutID, workouts) {
+  for (var value in workouts) if (workoutID == value.docID) return value.name;
+  return '[Deleted]';
+}

@@ -169,84 +169,73 @@ class _WorkoutState extends State<WorkoutPage> {
                         : widget.favoriteWorkout(workout.docID, true);
                   }),
               title: Text('${workout.name}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                      icon: Icon(
-                        Icons.upload_rounded,
-                        color: Colors.blueAccent,
-                      ),
-                      onPressed: () {}),
-                  PopupMenuButton(
-                    onSelected: (value) {
-                      if (value == 0) {
-                        showWorkoutDetails(context, workout,
-                            updateList(workout, widget.exercises));
-                      }
-                      if (value == 1) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateWorkoutRoute(
-                                    workoutExercises: workout.exerciseRef,
-                                    actionName: 'Edit Workout',
-                                    workoutName: workout.name,
-                                    createNewWorkout: false,
-                                    workoutID: workout.docID,
-                                  )),
-                        );
-                      }
-                      if (value == 2) {
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Confirm delete'),
-                            content: Text(
-                                'Deleting ${workout.name} will change all relevant record names to \"Deleted\". Are you sure you want to delete ${workout.name}? '),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  widget.deleteWorkout(workout.docID);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'Delete',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ),
-                            ],
+              trailing: PopupMenuButton(
+                onSelected: (value) {
+                  if (value == 0) {
+                    showWorkoutDetails(context, workout,
+                        updateList(workout, widget.exercises));
+                  }
+                  if (value == 1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateWorkoutRoute(
+                                workoutExercises: workout.exerciseRef,
+                                actionName: 'Edit Workout',
+                                workoutName: workout.name,
+                                createNewWorkout: false,
+                                workoutID: workout.docID,
+                              )),
+                    );
+                  }
+                  if (value == 2) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Confirm delete'),
+                        content: Text(
+                            'Deleting ${workout.name} will change all relevant record names to \"Deleted\". Are you sure you want to delete ${workout.name}? '),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
                           ),
-                        );
-                      }
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8.0),
+                          TextButton(
+                            onPressed: () {
+                              widget.deleteWorkout(workout.docID);
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    icon: Icon(
-                      Icons.more_vert,
-                    ),
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                      const PopupMenuItem(
-                        child: Text('See Details'),
-                        value: 0,
-                      ),
-                      const PopupMenuItem(
-                        child: Text('Edit'),
-                        value: 1,
-                      ),
-                      PopupMenuDivider(),
-                      const PopupMenuItem(
-                        child: Text('Delete'),
-                        value: 2,
-                      ),
-                    ],
+                    );
+                  }
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8.0),
+                  ),
+                ),
+                icon: Icon(
+                  Icons.more_vert,
+                ),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                  const PopupMenuItem(
+                    child: Text('See Details'),
+                    value: 0,
+                  ),
+                  const PopupMenuItem(
+                    child: Text('Edit'),
+                    value: 1,
+                  ),
+                  PopupMenuDivider(),
+                  const PopupMenuItem(
+                    child: Text('Delete'),
+                    value: 2,
                   ),
                 ],
               ),

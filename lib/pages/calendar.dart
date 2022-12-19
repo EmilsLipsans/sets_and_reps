@@ -1,6 +1,8 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/home.dart';
@@ -22,14 +24,15 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 }
 
 final kToday = DateTime.now();
-final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
-final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+final kFirstDay = DateTime(2022, 10, 1);
+final kLastDay = DateTime(2032, 12, 31);
 
 class Event {
   final String title;
-  final String id;
+  final String workoutID;
+  final String docID;
 
-  Event(this.title, this.id);
+  Event(this.title, this.workoutID, this.docID);
 
   @override
   String toString() => title;
@@ -56,6 +59,8 @@ class CalendarPage extends StatelessWidget {
             Expanded(
               child: CalendarBody(
                 kEvents: appState.kEvents,
+                deleteWorkoutRecord: (docID) =>
+                    appState.deleteWorkoutRecord(docID),
               ),
             ),
           ],
@@ -66,11 +71,10 @@ class CalendarPage extends StatelessWidget {
 }
 
 class CalendarBody extends StatefulWidget {
-  const CalendarBody({
-    super.key,
-    required this.kEvents,
-  });
+  const CalendarBody(
+      {super.key, required this.kEvents, required this.deleteWorkoutRecord});
   final kEvents;
+  final FutureOr<void> Function(String docID) deleteWorkoutRecord;
   @override
   _CalendarPageBodyState createState() => _CalendarPageBodyState();
 }
@@ -97,6 +101,13 @@ class _CalendarPageBodyState extends State<CalendarBody> {
   void dispose() {
     _selectedEvents.dispose();
     super.dispose();
+  }
+
+  void onDelete() {
+    setState(() {
+      _selectedDay = _focusedDay;
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    });
   }
 
   List<Event> _getEventsForDay(DateTime day) {
@@ -186,36 +197,65 @@ class _CalendarPageBodyState extends State<CalendarBody> {
         Expanded(
           child: ValueListenableBuilder<List<Event>>(
             valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                    ),
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      child: ListTile(
-                        onTap: () => print('${value[index].id}'),
-                        title: Center(
-                          child: Text('${value[index].title}'),
-                        ),
-                        tileColor: Color.fromRGBO(68, 138, 255, 0.6),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Color.fromRGBO(68, 138, 255, 1)),
-                          borderRadius: BorderRadius.circular(4.0),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+            builder: (context, value, _) => ListView.builder(
+              itemCount: value.length,
+              itemBuilder: (context, index) => events(value[index]),
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget events(value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12.0,
+      ),
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: ListTile(
+          leading: SizedBox(),
+          // onTap: () => print('${value[index].id}'),
+          title: Text('${value.title}'),
+          trailing: PopupMenuButton(
+            onSelected: (selected) {
+              if (selected == 0) {}
+
+              if (selected == 1) {
+                print("delete: ${value.docID} ");
+                setState(() {
+                  widget.deleteWorkoutRecord(value.docID);
+                });
+              }
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8.0),
+              ),
+            ),
+            icon: Icon(
+              Icons.more_vert,
+            ),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+              const PopupMenuItem(
+                child: Text('See Details'),
+                value: 0,
+              ),
+              PopupMenuDivider(),
+              const PopupMenuItem(
+                child: Text('Delete'),
+                value: 1,
+              ),
+            ],
+          ),
+          tileColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+        ),
+      ),
     );
   }
 }

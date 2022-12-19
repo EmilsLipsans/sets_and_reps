@@ -13,6 +13,7 @@ import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
+import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:provider/provider.dart';
 import 'dart:collection';
 import 'package:table_calendar/table_calendar.dart';
@@ -376,9 +377,9 @@ class ApplicationState extends ChangeNotifier {
                     .format(DateTime.fromMillisecondsSinceEpoch(eventDate)) ||
             snapshot.docs.indexOf(document) == 0) {
           daysEvents.add(Event(
-            document.data()['workoutID'],
-            'name',
-          ));
+              workoutName(document.data()['workoutID'], workoutList),
+              document.data()['workoutID'],
+              document.id));
           eventDate = document.data()['timestamp'];
         } else {
           _workoutRecordList.add(
@@ -387,28 +388,24 @@ class ApplicationState extends ChangeNotifier {
               List.from(daysEvents),
             ),
           );
-          print("days event $daysEvents");
           daysEvents.clear();
           daysEvents.add(Event(
-            document.data()['workoutID'],
-            'name',
-          ));
+              workoutName(document.data()['workoutID'], workoutList),
+              document.data()['workoutID'],
+              document.id));
           eventDate = document.data()['timestamp'];
         }
 
         recordedExerciseList.clear();
       }
-      for (var item in _workoutRecordList) {
-        print(item.eventList.length);
-        for (var event in item.eventList)
-          print(
-              "Workouts Events: ${event.title} ${item.eventList.indexOf(event) + 1}");
-      }
+      kEvents.clear();
+
       var _kEventSource = Map.fromIterable(_workoutRecordList,
           key: (item) => DateTime.fromMillisecondsSinceEpoch(item.eventDate),
           value: (item) => item.eventList as List<Event>);
       kEvents..addAll(_kEventSource);
       _workoutRecordList.clear();
+      _kEventSource.clear();
       notifyListeners();
     });
   }
@@ -426,6 +423,16 @@ class ApplicationState extends ChangeNotifier {
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
+  }
+
+  Future<void> deleteWorkoutRecord(String docID) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    return FirebaseFirestore.instance
+        .collection('workoutRecords')
+        .doc('$docID')
+        .delete();
   }
 
   Future<void> favoriteWorkout(String docID, bool favorite) {

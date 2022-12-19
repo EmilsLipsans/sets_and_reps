@@ -197,65 +197,67 @@ class _CalendarPageBodyState extends State<CalendarBody> {
         Expanded(
           child: ValueListenableBuilder<List<Event>>(
             valueListenable: _selectedEvents,
-            builder: (context, value, _) => ListView.builder(
-              itemCount: value.length,
-              itemBuilder: (context, index) => events(value[index]),
-            ),
+            builder: (context, value, _) {
+              return ListView.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                    ),
+                    child: Card(
+                      clipBehavior: Clip.hardEdge,
+                      child: ListTile(
+                        leading: SizedBox(),
+                        // onTap: () => print('${value[index].id}'),
+                        title: Text('${value[index].title}'),
+                        trailing: PopupMenuButton(
+                          onSelected: (selected) {
+                            if (selected == 0) {}
+
+                            if (selected == 1) {
+                              print("delete: ${value[index].docID} ");
+                              setState(() {
+                                widget.deleteWorkoutRecord(value[index].docID);
+                                value.removeAt(index);
+                              });
+                            }
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          icon: Icon(
+                            Icons.more_vert,
+                          ),
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry>[
+                            const PopupMenuItem(
+                              child: Text('See Details'),
+                              value: 0,
+                            ),
+                            PopupMenuDivider(),
+                            const PopupMenuItem(
+                              child: Text('Delete'),
+                              value: 1,
+                            ),
+                          ],
+                        ),
+                        tileColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ),
       ],
-    );
-  }
-
-  Widget events(value) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 12.0,
-      ),
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        child: ListTile(
-          leading: SizedBox(),
-          // onTap: () => print('${value[index].id}'),
-          title: Text('${value.title}'),
-          trailing: PopupMenuButton(
-            onSelected: (selected) {
-              if (selected == 0) {}
-
-              if (selected == 1) {
-                print("delete: ${value.docID} ");
-                setState(() {
-                  widget.deleteWorkoutRecord(value.docID);
-                });
-              }
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8.0),
-              ),
-            ),
-            icon: Icon(
-              Icons.more_vert,
-            ),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-              const PopupMenuItem(
-                child: Text('See Details'),
-                value: 0,
-              ),
-              PopupMenuDivider(),
-              const PopupMenuItem(
-                child: Text('Delete'),
-                value: 1,
-              ),
-            ],
-          ),
-          tileColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-        ),
-      ),
     );
   }
 }

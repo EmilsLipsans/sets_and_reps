@@ -12,6 +12,7 @@ import 'package:gtk_flutter/pages/login_screen.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
+import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:provider/provider.dart';
@@ -378,7 +379,7 @@ class ApplicationState extends ChangeNotifier {
             snapshot.docs.indexOf(document) == 0) {
           daysEvents.add(Event(
               workoutName(document.data()['workoutID'], workoutList),
-              document.data()['workoutID'],
+              List.from(recordedExerciseList),
               document.id));
           eventDate = document.data()['timestamp'];
         } else {
@@ -391,7 +392,7 @@ class ApplicationState extends ChangeNotifier {
           daysEvents.clear();
           daysEvents.add(Event(
               workoutName(document.data()['workoutID'], workoutList),
-              document.data()['workoutID'],
+              List.from(recordedExerciseList),
               document.id));
           eventDate = document.data()['timestamp'];
         }

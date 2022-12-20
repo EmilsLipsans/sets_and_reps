@@ -33,6 +33,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
           ),
         ],
       ),
+      resizeToAvoidBottomInset: false,
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(
           children: [

@@ -5,8 +5,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/pages/home.dart';
-import 'package:gtk_flutter/utils/calendar_utils.dart';
+import 'package:gtk_flutter/pages/workout_start_details.dart';
+import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,10 +29,10 @@ final kLastDay = DateTime(2032, 12, 31);
 
 class Event {
   final String title;
-  final String workoutID;
+  final List recordedExerciseList;
   final String docID;
 
-  Event(this.title, this.workoutID, this.docID);
+  Event(this.title, this.recordedExerciseList, this.docID);
 
   @override
   String toString() => title;
@@ -59,6 +59,7 @@ class CalendarPage extends StatelessWidget {
             Expanded(
               child: CalendarBody(
                 kEvents: appState.kEvents,
+                exreciseList: appState.exreciseList,
                 deleteWorkoutRecord: (docID) =>
                     appState.deleteWorkoutRecord(docID),
               ),
@@ -72,8 +73,12 @@ class CalendarPage extends StatelessWidget {
 
 class CalendarBody extends StatefulWidget {
   const CalendarBody(
-      {super.key, required this.kEvents, required this.deleteWorkoutRecord});
+      {super.key,
+      required this.kEvents,
+      required this.deleteWorkoutRecord,
+      required this.exreciseList});
   final kEvents;
+  final exreciseList;
   final FutureOr<void> Function(String docID) deleteWorkoutRecord;
   @override
   _CalendarPageBodyState createState() => _CalendarPageBodyState();
@@ -213,14 +218,39 @@ class _CalendarPageBodyState extends State<CalendarBody> {
                         title: Text('${value[index].title}'),
                         trailing: PopupMenuButton(
                           onSelected: (selected) {
-                            if (selected == 0) {}
+                            if (selected == 0) {
+                              recordDetails(value[index]);
+                            }
 
                             if (selected == 1) {
-                              print("delete: ${value[index].docID} ");
-                              setState(() {
-                                widget.deleteWorkoutRecord(value[index].docID);
-                                value.removeAt(index);
-                              });
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Confirm delete'),
+                                  content: Text(
+                                      'Are you sure you want to permanently delete this recording? '),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          widget.deleteWorkoutRecord(
+                                              value[index].docID);
+                                          value.removeAt(index);
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                           },
                           shape: RoundedRectangleBorder(
@@ -259,5 +289,132 @@ class _CalendarPageBodyState extends State<CalendarBody> {
         ),
       ],
     );
+  }
+
+  recordDetails(event) {
+    return showDialog(
+        useSafeArea: true,
+        context: context,
+        builder: (_) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
+              content: Builder(
+                builder: (context) {
+                  // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                  var height = MediaQuery.of(context).size.height;
+                  var width = MediaQuery.of(context).size.width;
+                  return Container(
+                    height: height / 1.5,
+                    width: width / 1.5,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Column(children: [
+                            Text('${event.title}'),
+                            SizedBox(height: 5),
+                            const Divider(
+                              color: Colors.grey,
+                              height: 20,
+                              thickness: 1,
+                              indent: 0,
+                              endIndent: 0,
+                            ),
+                          ]),
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: ListView(
+                            scrollDirection: Axis.vertical,
+                            children: <Widget>[
+                              for (var set in event.recordedExerciseList)
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 2,
+                                      color: Color.fromRGBO(68, 138, 255, 1),
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    title: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0, bottom: 10.0),
+                                        child: Text(
+                                          exerciseName(set['exerciseID'],
+                                              widget.exreciseList),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    subtitle: Column(
+                                      children: [
+                                        for (var value in set['sets'])
+                                          Card(
+                                            clipBehavior: Clip.hardEdge,
+                                            child: ListTile(
+                                              title: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 20.0,
+                                                              right: 20.0),
+                                                      child: Text(
+                                                        "${set['sets'].indexOf(value) + 1}",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.grey),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                      child: Text(
+                                                    "${value['weight']} kgs",
+                                                    textAlign: TextAlign.right,
+                                                  )),
+                                                  Expanded(
+                                                      child: Text(
+                                                    "${value['reps']} reps",
+                                                    textAlign: TextAlign.right,
+                                                  )),
+                                                ],
+                                              ),
+                                              tileColor: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                            ),
+                                          ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                      ],
+                                    ),
+                                    tileColor:
+                                        Color.fromRGBO(68, 138, 255, 0.6),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        MaterialButton(
+                          color: Color.fromARGB(255, 230, 230, 230),
+                          child: const Text("Close"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ));
   }
 }

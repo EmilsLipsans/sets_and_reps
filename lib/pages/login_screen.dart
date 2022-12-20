@@ -16,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  GoogleSignInAccount? _currentUser;
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
   @override
   void initState() {

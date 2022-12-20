@@ -37,3 +37,8 @@ String workoutName(workoutID, workouts) {
   for (var value in workouts) if (workoutID == value.docID) return value.name;
   return '[Deleted]';
 }
+
+String exerciseName(exerciseID, exercises) {
+  for (var value in exercises) if (exerciseID == value.docID) return value.name;
+  return '[Deleted]';
+}

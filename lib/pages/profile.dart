@@ -1,7 +1,6 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/pages/loggedOut_profile.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {

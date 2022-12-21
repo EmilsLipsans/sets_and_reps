@@ -53,7 +53,18 @@ class _MyTabbedPageState extends State<WorkoutsPage>
         controller: _tabController,
         children: myTabs.map((Tab tab) {
           if (tab.text == 'BUILT-IN') {
-            return noList();
+            return Consumer<ApplicationState>(
+              builder: (context, appState, _) => Column(
+                children: [
+                  Expanded(
+                    child: WorkoutPageSecond(
+                      workouts: appState.workoutList,
+                      exercises: appState.exreciseList,
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else {
             return Consumer<ApplicationState>(
               builder: (context, appState, _) => Column(
@@ -138,7 +149,7 @@ class _WorkoutState extends State<WorkoutPage> {
           children: [
             Expanded(
               flex: 9,
-              child: exerciseCardList(widget.workouts),
+              child: workoutCardList(widget.workouts),
             ),
             Spacer(),
           ],
@@ -147,7 +158,7 @@ class _WorkoutState extends State<WorkoutPage> {
     );
   }
 
-  Widget exerciseCardList(workouts) {
+  Widget workoutCardList(workouts) {
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
@@ -240,6 +251,69 @@ class _WorkoutState extends State<WorkoutPage> {
                 ],
               ),
             ),
+          ),
+      ],
+    );
+  }
+}
+
+class WorkoutPageSecond extends StatefulWidget {
+  const WorkoutPageSecond(
+      {super.key, required this.workouts, required this.exercises});
+  final List<Workout> workouts;
+  final List<Exrecises> exercises;
+  @override
+  State<WorkoutPageSecond> createState() => _WorkoutPageSecondState();
+}
+
+class _WorkoutPageSecondState extends State<WorkoutPageSecond> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(
+            top: 20.0, bottom: 30.0, left: 20.0, right: 20.0),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 9,
+              child: workoutCardList(widget.workouts),
+            ),
+            Spacer(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget workoutCardList(workouts) {
+    return ListView(
+      scrollDirection: Axis.vertical,
+      children: <Widget>[
+        for (var workout in widget.workouts)
+          Card(
+            clipBehavior: Clip.hardEdge,
+            child: ListTile(
+                tileColor: Color.fromARGB(255, 255, 255, 255),
+                title: Text('${workout.name}'),
+                leading: SizedBox(),
+                trailing: PopupMenuButton(
+                  onSelected: (value) {},
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8.0),
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.more_vert,
+                  ),
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                    const PopupMenuItem(
+                      child: Text('See Details'),
+                      value: 0,
+                    ),
+                  ],
+                )),
           ),
       ],
     );

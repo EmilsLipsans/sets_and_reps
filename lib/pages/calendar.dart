@@ -364,8 +364,7 @@ class _CalendarPageBodyState extends State<CalendarBody> {
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              left: 20.0,
-                                                              right: 20.0),
+                                                              right: 5.0),
                                                       child: Text(
                                                         "${set['sets'].indexOf(value) + 1}",
                                                         style: TextStyle(
@@ -376,15 +375,19 @@ class _CalendarPageBodyState extends State<CalendarBody> {
                                                     ),
                                                   ),
                                                   Expanded(
+                                                      flex: 2,
                                                       child: Text(
-                                                    "${value['weight']} kgs",
-                                                    textAlign: TextAlign.right,
-                                                  )),
+                                                        "${value['weight']} kgs",
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                      )),
                                                   Expanded(
+                                                      flex: 2,
                                                       child: Text(
-                                                    "${value['reps']} reps",
-                                                    textAlign: TextAlign.right,
-                                                  )),
+                                                        "${value['reps']} reps",
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                      )),
                                                 ],
                                               ),
                                               tileColor: Color.fromARGB(

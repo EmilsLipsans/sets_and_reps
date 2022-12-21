@@ -54,9 +54,14 @@ showExerciseDetails(context, exercise) {
                         endIndent: 0,
                       ),
                       SizedBox(height: 5),
-                      exercise.description.length != 0
-                          ? Text('${exercise.description}')
-                          : Text('No description added'),
+                      Expanded(
+                        flex: 5,
+                        child: SingleChildScrollView(
+                          child: exercise.description.length != 0
+                              ? Text('${exercise.description}')
+                              : Text('No description added'),
+                        ),
+                      ),
                       SizedBox(height: 5),
                       const Divider(
                         color: Colors.grey,

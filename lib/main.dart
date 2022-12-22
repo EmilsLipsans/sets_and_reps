@@ -219,7 +219,7 @@ class ApplicationState extends ChangeNotifier {
 
   StreamSubscription<QuerySnapshot>? _workoutListSubscription;
   List<Workout> _workoutList = [];
-  List<Workout> get workoutList => _workoutList;
+  List<Workout> get workoutList => _workoutList + _defaultWorkoutList;
 
   StreamSubscription<QuerySnapshot>? _workoutRecordListSubscription;
   List<WorkoutRecord> _latestWorkoutRecordList = [];
@@ -253,7 +253,7 @@ class ApplicationState extends ChangeNotifier {
         loadLastWorkoutRecord(user);
 
         _exreciseListSubscription = FirebaseFirestore.instance
-            .collection('exercise')
+            .collection('exercises')
             .where('userId', isEqualTo: user.uid)
             .orderBy('timestamp', descending: true)
             .snapshots()
@@ -278,6 +278,7 @@ class ApplicationState extends ChangeNotifier {
         _exerciseList = [];
         _workoutList = [];
         _latestWorkoutRecordList = [];
+        _defaultWorkoutList = [];
         _defaultExerciseList = [];
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
@@ -306,6 +307,7 @@ class ApplicationState extends ChangeNotifier {
                 document.data()['exerciseRef'].cast<String>() as List<String>,
             name: document.data()['name'] as String,
             favorite: document.data()['favorite'] as bool,
+            builtIn: true,
           ),
         );
       }
@@ -315,7 +317,7 @@ class ApplicationState extends ChangeNotifier {
 
   loadBuiltInExercises(user) {
     _defaultExerciseListSubscription = FirebaseFirestore.instance
-        .collection('exercise')
+        .collection('exercises')
         .where('userId', isEqualTo: "FtQLhdbcPsZxhKNtFGc1SOUdehy2")
         .orderBy('name')
         .snapshots()
@@ -354,6 +356,7 @@ class ApplicationState extends ChangeNotifier {
                 document.data()['exerciseRef'].cast<String>() as List<String>,
             name: document.data()['name'] as String,
             favorite: document.data()['favorite'] as bool,
+            builtIn: false,
           ),
         );
       }
@@ -411,6 +414,7 @@ class ApplicationState extends ChangeNotifier {
       List<Event> daysEvents = [];
       List recordedExerciseList = [];
       List sets = [];
+      var count = 0;
       for (final document in snapshot.docs) {
         for (var exercise in document.data()['recordedExercises']) {
           for (var values in exercise.cast<String, dynamic>()['sets']) {
@@ -439,12 +443,13 @@ class ApplicationState extends ChangeNotifier {
                 DateFormat.MMMd()
                     .format(DateTime.fromMillisecondsSinceEpoch(eventDate)) ||
             eventDate == 0) {
+          count++;
           daysEvents.add(Event(
               workoutName(document.data()['workoutID'], workoutList),
               List.from(recordedExerciseList),
               document.id));
           eventDate = document.data()['timestamp'];
-          if (snapshot.docs.length == 1) {
+          if (snapshot.docs.length == count) {
             _workoutRecordList.add(
               CalendarEvent(
                 eventDate,
@@ -453,6 +458,7 @@ class ApplicationState extends ChangeNotifier {
             );
           }
         } else {
+          count++;
           _workoutRecordList.add(
             CalendarEvent(
               eventDate,
@@ -566,7 +572,7 @@ class ApplicationState extends ChangeNotifier {
     }
 
     return FirebaseFirestore.instance
-        .collection('exercise')
+        .collection('exercises')
         .add(<String, dynamic>{
       'name': name,
       'description': description,
@@ -584,7 +590,7 @@ class ApplicationState extends ChangeNotifier {
     }
 
     return FirebaseFirestore.instance
-        .collection('exercise')
+        .collection('exercises')
         .doc('$docID')
         .update({
       'name': name,
@@ -601,7 +607,7 @@ class ApplicationState extends ChangeNotifier {
       throw Exception('Must be logged in');
     }
     return FirebaseFirestore.instance
-        .collection('exercise')
+        .collection('exercises')
         .doc('$docID')
         .delete();
   }

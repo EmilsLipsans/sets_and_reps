@@ -157,8 +157,10 @@ showWorkoutDetails(context, workout, exerciseList) {
                                     tileColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
-                                          color:
-                                              Color.fromRGBO(68, 138, 255, 1)),
+                                          color: exercise.builtIn
+                                              ? Colors.white
+                                              : Color.fromRGBO(
+                                                  68, 138, 255, 1)),
                                       borderRadius: BorderRadius.circular(4.0),
                                     ),
                                     title: Row(

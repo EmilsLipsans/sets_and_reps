@@ -98,7 +98,8 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
-        for (var workout in widget.workouts) workoutCard(workout),
+        for (var workout in widget.workouts)
+          if (!workout.builtIn) workoutCard(workout),
         for (var defaultWorkout in widget.defaultWorkouts)
           workoutCard(defaultWorkout),
       ],

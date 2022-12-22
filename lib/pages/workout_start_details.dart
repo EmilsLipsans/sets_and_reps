@@ -39,7 +39,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
           children: [
             Expanded(
               child: RecordWorkoutPage(
-                  exercises: appState.exreciseList,
+                  exercises: appState.exerciseList,
                   workout: widget.workout,
                   count: count,
                   updateList: (list) {

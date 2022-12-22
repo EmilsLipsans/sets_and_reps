@@ -214,8 +214,8 @@ class ApplicationState extends ChangeNotifier {
   List<Exrecises> get defaultExerciseList => _defaultExerciseList;
 
   StreamSubscription<QuerySnapshot>? _exreciseListSubscription;
-  List<Exrecises> _exreciseList = [];
-  List<Exrecises> get exreciseList => _exreciseList + defaultExerciseList;
+  List<Exrecises> _exerciseList = [];
+  List<Exrecises> get exerciseList => _exerciseList + defaultExerciseList;
 
   StreamSubscription<QuerySnapshot>? _workoutListSubscription;
   List<Workout> _workoutList = [];
@@ -253,14 +253,14 @@ class ApplicationState extends ChangeNotifier {
         loadLastWorkoutRecord(user);
 
         _exreciseListSubscription = FirebaseFirestore.instance
-            .collection('exerices')
+            .collection('exercise')
             .where('userId', isEqualTo: user.uid)
             .orderBy('timestamp', descending: true)
             .snapshots()
             .listen((snapshot) {
-          _exreciseList = [];
+          _exerciseList = [];
           for (final document in snapshot.docs) {
-            _exreciseList.add(
+            _exerciseList.add(
               Exrecises(
                 docID: document.id,
                 name: document.data()['name'] as String,
@@ -275,7 +275,7 @@ class ApplicationState extends ChangeNotifier {
         });
       } else {
         _loggedIn = false;
-        _exreciseList = [];
+        _exerciseList = [];
         _workoutList = [];
         _latestWorkoutRecordList = [];
         _defaultExerciseList = [];
@@ -315,7 +315,7 @@ class ApplicationState extends ChangeNotifier {
 
   loadBuiltInExercises(user) {
     _defaultExerciseListSubscription = FirebaseFirestore.instance
-        .collection('exerices')
+        .collection('exercise')
         .where('userId', isEqualTo: "FtQLhdbcPsZxhKNtFGc1SOUdehy2")
         .orderBy('name')
         .snapshots()
@@ -566,7 +566,7 @@ class ApplicationState extends ChangeNotifier {
     }
 
     return FirebaseFirestore.instance
-        .collection('exerices')
+        .collection('exercise')
         .add(<String, dynamic>{
       'name': name,
       'description': description,
@@ -584,7 +584,7 @@ class ApplicationState extends ChangeNotifier {
     }
 
     return FirebaseFirestore.instance
-        .collection('exerices')
+        .collection('exercise')
         .doc('$docID')
         .update({
       'name': name,
@@ -601,7 +601,7 @@ class ApplicationState extends ChangeNotifier {
       throw Exception('Must be logged in');
     }
     return FirebaseFirestore.instance
-        .collection('exerices')
+        .collection('exercise')
         .doc('$docID')
         .delete();
   }

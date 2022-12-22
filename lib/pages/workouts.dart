@@ -59,7 +59,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
                   Expanded(
                     child: WorkoutPageSecond(
                       workouts: appState.defaultWorkoutList,
-                      exercises: appState.exreciseList,
+                      exercises: appState.exerciseList,
                     ),
                   ),
                 ],
@@ -75,7 +75,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
                       favoriteWorkout: (docID, favorite) =>
                           appState.favoriteWorkout(docID, favorite),
                       workouts: appState.workoutList,
-                      exercises: appState.exreciseList,
+                      exercises: appState.exerciseList,
                     ),
                   ),
                 ],

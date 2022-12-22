@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
               child: WorkoutRecordPage(
                 recordedWorkouts: appState.latestWorkoutRecordList,
                 workouts: appState.workoutList,
-                exercises: appState.exreciseList,
+                exercises: appState.exerciseList,
                 lastWorkout: appState.finalWorkout,
               ),
             ),

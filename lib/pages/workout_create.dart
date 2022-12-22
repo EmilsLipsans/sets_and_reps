@@ -47,7 +47,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
                 deleteExercise: (docID) => appState.deleteExercise(docID),
                 updateWorkout: (workoutName, list, docID) =>
                     appState.updateWorkout(workoutName, list, docID),
-                exercises: appState.exreciseList,
+                exercises: appState.exerciseList,
                 workoutExercises: widget.workoutExercises,
                 workoutname: widget.workoutName,
                 createNewWorkout: widget.createNewWorkout,

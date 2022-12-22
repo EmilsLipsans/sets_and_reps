@@ -23,7 +23,7 @@ class StartWorkoutRoute extends StatelessWidget {
               child: StartWorkoutPage(
                 workouts: appState.workoutList,
                 defaultWorkouts: appState.defaultWorkoutList,
-                exercises: appState.exreciseList,
+                exercises: appState.exerciseList,
               ),
             ),
           ],

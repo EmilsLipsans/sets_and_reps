@@ -59,7 +59,7 @@ class CalendarPage extends StatelessWidget {
             Expanded(
               child: CalendarBody(
                 kEvents: appState.kEvents,
-                exreciseList: appState.exreciseList,
+                exreciseList: appState.exerciseList,
                 deleteWorkoutRecord: (docID) =>
                     appState.deleteWorkoutRecord(docID),
               ),

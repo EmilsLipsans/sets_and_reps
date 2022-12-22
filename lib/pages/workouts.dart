@@ -58,7 +58,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
                 children: [
                   Expanded(
                     child: WorkoutPageSecond(
-                      workouts: appState.workoutList,
+                      workouts: appState.defaultWorkoutList,
                       exercises: appState.exreciseList,
                     ),
                   ),
@@ -149,7 +149,9 @@ class _WorkoutState extends State<WorkoutPage> {
           children: [
             Expanded(
               flex: 9,
-              child: workoutCardList(widget.workouts),
+              child: widget.workouts.length != 0
+                  ? workoutCardList(widget.workouts)
+                  : Center(child: Paragraph('No workouts added')),
             ),
             Spacer(),
           ],
@@ -298,7 +300,11 @@ class _WorkoutPageSecondState extends State<WorkoutPageSecond> {
                 title: Text('${workout.name}'),
                 leading: SizedBox(),
                 trailing: PopupMenuButton(
-                  onSelected: (value) {},
+                  onSelected: (value) {
+                    if (value == 0)
+                      showWorkoutDetails(context, workout,
+                          updateList(workout, widget.exercises));
+                  },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(8.0),

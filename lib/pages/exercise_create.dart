@@ -65,6 +65,7 @@ class _NewExerciseState extends State<NewExercise> {
     'Glutes',
     'Hamstrings',
     'Quads',
+    'Shoulders',
     'Triceps',
     'Other',
   ];

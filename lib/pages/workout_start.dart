@@ -22,6 +22,7 @@ class StartWorkoutRoute extends StatelessWidget {
             Expanded(
               child: StartWorkoutPage(
                 workouts: appState.workoutList,
+                defaultWorkouts: appState.defaultWorkoutList,
                 exercises: appState.exreciseList,
               ),
             ),
@@ -34,9 +35,13 @@ class StartWorkoutRoute extends StatelessWidget {
 
 class StartWorkoutPage extends StatefulWidget {
   const StartWorkoutPage(
-      {super.key, required this.workouts, required this.exercises});
+      {super.key,
+      required this.workouts,
+      required this.exercises,
+      required this.defaultWorkouts});
   final List<Workout> workouts;
   final List<Exrecises> exercises;
+  final List<Workout> defaultWorkouts;
   @override
   State<StartWorkoutPage> createState() => _StartWorkoutPageState();
 }
@@ -93,50 +98,55 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
-        for (var workout in widget.workouts)
-          Card(
-            clipBehavior: Clip.hardEdge,
-            shape: workout.favorite
-                ? RoundedRectangleBorder(
-                    side: BorderSide(color: Color.fromARGB(255, 255, 238, 88)),
-                    borderRadius: BorderRadius.circular(4.0),
-                  )
-                : null,
-            child: RadioListTile(
-              tileColor: Color.fromARGB(255, 255, 255, 255),
-              value: workout,
-              groupValue: checkedWorkout,
-              onChanged: (value) {
-                setState(() {
-                  checkedWorkout = value;
-                });
-              },
-              title: Text('${workout.name}'),
-              secondary: PopupMenuButton(
-                onSelected: (value) {
-                  if (value == 0) {
-                    showWorkoutDetails(context, workout,
-                        updateList(workout, widget.exercises));
-                  }
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8.0),
-                  ),
-                ),
-                icon: Icon(
-                  Icons.more_vert,
-                ),
-                itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                  const PopupMenuItem(
-                    child: Text('See Details'),
-                    value: 0,
-                  ),
-                ],
-              ),
+        for (var workout in widget.workouts) workoutCard(workout),
+        for (var defaultWorkout in widget.defaultWorkouts)
+          workoutCard(defaultWorkout),
+      ],
+    );
+  }
+
+  workoutCard(workout) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      shape: workout.favorite
+          ? RoundedRectangleBorder(
+              side: BorderSide(color: Color.fromARGB(255, 255, 238, 88)),
+              borderRadius: BorderRadius.circular(4.0),
+            )
+          : null,
+      child: RadioListTile(
+        tileColor: Color.fromARGB(255, 255, 255, 255),
+        value: workout,
+        groupValue: checkedWorkout,
+        onChanged: (value) {
+          setState(() {
+            checkedWorkout = value;
+          });
+        },
+        title: Text('${workout.name}'),
+        secondary: PopupMenuButton(
+          onSelected: (value) {
+            if (value == 0) {
+              showWorkoutDetails(
+                  context, workout, updateList(workout, widget.exercises));
+            }
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
             ),
           ),
-      ],
+          icon: Icon(
+            Icons.more_vert,
+          ),
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            const PopupMenuItem(
+              child: Text('See Details'),
+              value: 0,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

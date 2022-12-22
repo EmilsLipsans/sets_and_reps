@@ -13,6 +13,7 @@ const List<String> items = [
   'Glutes',
   'Hamstrings',
   'Quads',
+  'Shoulders',
   'Triceps',
   'Other',
 ];

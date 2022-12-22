@@ -205,6 +205,14 @@ class ApplicationState extends ChangeNotifier {
     return _loggedIn;
   }
 
+  StreamSubscription<QuerySnapshot>? _defaultWorkoutListSubscription;
+  List<Workout> _defaultWorkoutList = [];
+  List<Workout> get defaultWorkoutList => _defaultWorkoutList;
+
+  StreamSubscription<QuerySnapshot>? _defaultExerciseListSubscription;
+  List<Exrecises> _defaultExerciseList = [];
+  List<Exrecises> get defaultExerciseList => _defaultExerciseList;
+
   StreamSubscription<QuerySnapshot>? _exreciseListSubscription;
   List<Exrecises> _exreciseList = [];
   List<Exrecises> get exreciseList => _exreciseList;
@@ -239,8 +247,11 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = true;
 
         loadWorkouts(user);
+        loadBuiltInExercises(user);
+        loadBuiltInWorkouts(user);
         loadWorkoutRecords(user);
         loadLastWorkoutRecord(user);
+
         _exreciseListSubscription = FirebaseFirestore.instance
             .collection('exerices')
             .where('userId', isEqualTo: user.uid)
@@ -266,10 +277,59 @@ class ApplicationState extends ChangeNotifier {
         _exreciseList = [];
         _workoutList = [];
         _latestWorkoutRecordList = [];
+        _defaultExerciseList = [];
         _exreciseListSubscription?.cancel();
         _workoutListSubscription?.cancel();
         _workoutRecordListSubscription?.cancel();
         _lastWorkoutRecordSubscription?.cancel();
+        _defaultWorkoutListSubscription?.cancel();
+        _defaultExerciseListSubscription?.cancel();
+      }
+      notifyListeners();
+    });
+  }
+
+  loadBuiltInWorkouts(user) {
+    _defaultWorkoutListSubscription = FirebaseFirestore.instance
+        .collection('workouts')
+        .where('userId', isEqualTo: "FtQLhdbcPsZxhKNtFGc1SOUdehy2")
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      _defaultWorkoutList = [];
+      for (final document in snapshot.docs) {
+        _defaultWorkoutList.add(
+          Workout(
+            docID: document.id,
+            exerciseRef:
+                document.data()['exerciseRef'].cast<String>() as List<String>,
+            name: document.data()['name'] as String,
+            favorite: document.data()['favorite'] as bool,
+          ),
+        );
+      }
+      notifyListeners();
+    });
+  }
+
+  loadBuiltInExercises(user) {
+    _defaultExerciseListSubscription = FirebaseFirestore.instance
+        .collection('exercises')
+        .where('userId', isEqualTo: "FtQLhdbcPsZxhKNtFGc1SOUdehy2")
+        .orderBy('name', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      _defaultExerciseList = [];
+      for (final document in snapshot.docs) {
+        _defaultExerciseList.add(
+          Exrecises(
+            docID: document.id,
+            name: document.data()['name'] as String,
+            description: document.data()['description'] as String,
+            url: document.data()['url'] as String,
+            category: document.data()['category'] as int,
+          ),
+        );
       }
       notifyListeners();
     });
@@ -376,12 +436,20 @@ class ApplicationState extends ChangeNotifier {
                     document.data()['timestamp'])) ==
                 DateFormat.MMMd()
                     .format(DateTime.fromMillisecondsSinceEpoch(eventDate)) ||
-            snapshot.docs.indexOf(document) == 0) {
+            eventDate == 0) {
           daysEvents.add(Event(
               workoutName(document.data()['workoutID'], workoutList),
               List.from(recordedExerciseList),
               document.id));
           eventDate = document.data()['timestamp'];
+          if (snapshot.docs.length == 1) {
+            _workoutRecordList.add(
+              CalendarEvent(
+                eventDate,
+                List.from(daysEvents),
+              ),
+            );
+          }
         } else {
           _workoutRecordList.add(
             CalendarEvent(
@@ -400,7 +468,6 @@ class ApplicationState extends ChangeNotifier {
         recordedExerciseList.clear();
       }
       kEvents.clear();
-
       var _kEventSource = Map.fromIterable(_workoutRecordList,
           key: (item) => DateTime.fromMillisecondsSinceEpoch(item.eventDate),
           value: (item) => item.eventList as List<Event>);

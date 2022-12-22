@@ -48,6 +48,7 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
                 updateWorkout: (workoutName, list, docID) =>
                     appState.updateWorkout(workoutName, list, docID),
                 exercises: appState.exreciseList,
+                defaultExercises: appState.defaultExerciseList,
                 workoutExercises: widget.workoutExercises,
                 workoutname: widget.workoutName,
                 createNewWorkout: widget.createNewWorkout,
@@ -76,23 +77,24 @@ class Exrecises {
 }
 
 class NewWorkout extends StatefulWidget {
-  const NewWorkout({
-    super.key,
-    required this.addworkout,
-    required this.deleteExercise,
-    required this.updateWorkout,
-    required this.exercises,
-    required this.workoutExercises,
-    required this.workoutname,
-    required this.createNewWorkout,
-    required this.workoutID,
-  });
+  const NewWorkout(
+      {super.key,
+      required this.addworkout,
+      required this.deleteExercise,
+      required this.updateWorkout,
+      required this.exercises,
+      required this.workoutExercises,
+      required this.workoutname,
+      required this.createNewWorkout,
+      required this.workoutID,
+      required this.defaultExercises});
 
   final FutureOr<void> Function(String newWorkout, List list) addworkout;
   final FutureOr<void> Function(String docID) deleteExercise;
   final FutureOr<void> Function(String workoutName, List list, String docID)
       updateWorkout;
   final List<Exrecises> exercises;
+  final List<Exrecises> defaultExercises;
   final List<String> workoutExercises;
   final workoutname;
   final bool createNewWorkout;
@@ -144,6 +146,7 @@ class _NewWorkoutState extends State<NewWorkout> {
     'Glutes',
     'Hamstrings',
     'Quads',
+    'Shoulders',
     'Triceps',
     'Other',
   ];
@@ -208,6 +211,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value as String;
+                    print(widget.defaultExercises);
                   });
                 },
                 buttonHeight: 40,
@@ -229,6 +233,8 @@ class _NewWorkoutState extends State<NewWorkout> {
                     if (selectedValue == null || selectedValue == 'All') ...[
                       for (var newWorkout in widget.exercises)
                         exerciseCards(newWorkout),
+                      for (var defaultExercise in widget.defaultExercises)
+                        defaultExerciseCards(defaultExercise),
                     ] else
                       for (var newWorkout in widget.exercises)
                         if (newWorkout.category ==
@@ -340,6 +346,53 @@ class _NewWorkoutState extends State<NewWorkout> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget defaultExerciseCards(newWorkout) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: ListTile(
+        leading: IconButton(
+            icon: Icon(
+              Icons.add_circle_rounded,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              if (exercisesAdded < 10) {
+                list.add(WorkoutExercises(
+                    name: newWorkout.name, docID: newWorkout.docID));
+                _incrementCounter(list.length);
+              } else {
+                final snackBar = SnackBar(
+                  content: const Text('Exercise List Full'),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }),
+        title: Text('${newWorkout.name}'),
+        trailing: PopupMenuButton(
+          onSelected: (value) {
+            if (value == 0) {
+              showExerciseDetails(context, newWorkout);
+            }
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+          icon: Icon(
+            Icons.more_vert,
+          ),
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            const PopupMenuItem(
+              child: Text('See Details'),
+              value: 0,
+            ),
+          ],
         ),
       ),
     );

@@ -70,10 +70,11 @@ class _UpdateExerciseState extends State<UpdateExercise> {
     'Glutes',
     'Hamstrings',
     'Quads',
+    'Shoulders',
     'Triceps',
     'Other',
   ];
-  String? selectedValue;
+  late String? selectedValue = items[widget.workout.category - 1];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -136,7 +137,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                       ),
                       items: addDividersAfterItems(items),
                       customItemsHeights: getCustomItemsHeights(items),
-                      value: selectedValue = items[widget.workout.category - 1],
+                      value: selectedValue,
                       validator: (value) {
                         if (value == null) {
                           return 'Select Exercise Category';
@@ -146,6 +147,10 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value as String;
+                          print(selectedValue);
+                          print(
+                            getItemPos(selectedValue as String, items),
+                          );
                         });
                       },
                       buttonHeight: 40,
@@ -209,6 +214,9 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                       color: Colors.blueAccent,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
+                          print(
+                            getItemPos(selectedValue as String, items),
+                          );
                           await widget.updateExercise(
                             _nameController.text,
                             _descriptionController.text,

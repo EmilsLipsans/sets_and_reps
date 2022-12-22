@@ -29,6 +29,7 @@ List<String> workoutNames(recordedWorkouts, workouts) {
         list.add('[Deleted]');
       }
     }
+    if (workouts.length == 0) list.add('[Deleted]');
   }
   return list;
 }

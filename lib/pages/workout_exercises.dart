@@ -81,7 +81,7 @@ class _WorkoutExercisesRouteState extends State<WorkoutExercisesRoute> {
       );
   Widget noList() {
     return Center(
-      child: Paragraph('No Exercises Added'),
+      child: Paragraph('No exercises added'),
     );
   }
 

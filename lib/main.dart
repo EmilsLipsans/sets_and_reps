@@ -215,7 +215,7 @@ class ApplicationState extends ChangeNotifier {
 
   StreamSubscription<QuerySnapshot>? _exreciseListSubscription;
   List<Exrecises> _exreciseList = [];
-  List<Exrecises> get exreciseList => _exreciseList;
+  List<Exrecises> get exreciseList => _exreciseList + defaultExerciseList;
 
   StreamSubscription<QuerySnapshot>? _workoutListSubscription;
   List<Workout> _workoutList = [];
@@ -267,6 +267,7 @@ class ApplicationState extends ChangeNotifier {
                 description: document.data()['description'] as String,
                 url: document.data()['url'] as String,
                 category: document.data()['category'] as int,
+                builtIn: false,
               ),
             );
           }
@@ -314,9 +315,9 @@ class ApplicationState extends ChangeNotifier {
 
   loadBuiltInExercises(user) {
     _defaultExerciseListSubscription = FirebaseFirestore.instance
-        .collection('exercises')
+        .collection('exerices')
         .where('userId', isEqualTo: "FtQLhdbcPsZxhKNtFGc1SOUdehy2")
-        .orderBy('name', descending: true)
+        .orderBy('name')
         .snapshots()
         .listen((snapshot) {
       _defaultExerciseList = [];
@@ -328,6 +329,7 @@ class ApplicationState extends ChangeNotifier {
             description: document.data()['description'] as String,
             url: document.data()['url'] as String,
             category: document.data()['category'] as int,
+            builtIn: true,
           ),
         );
       }

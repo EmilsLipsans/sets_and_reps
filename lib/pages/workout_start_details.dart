@@ -132,7 +132,8 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
               name: value.name,
               url: value.url,
               description: value.description,
-              category: value.category));
+              category: value.category,
+              builtIn: value.builtIn));
         continue;
       }
     widget.updateList(list);

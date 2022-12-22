@@ -11,7 +11,8 @@ List<Exrecises> updateList(Workout workout, List<Exrecises> exercises) {
             name: value.name,
             url: value.url,
             description: value.description,
-            category: value.category));
+            category: value.category,
+            builtIn: value.builtIn));
       continue;
     }
   return list;

@@ -48,7 +48,6 @@ class CreateWorkoutRouteState extends State<CreateWorkoutRoute> {
                 updateWorkout: (workoutName, list, docID) =>
                     appState.updateWorkout(workoutName, list, docID),
                 exercises: appState.exreciseList,
-                defaultExercises: appState.defaultExerciseList,
                 workoutExercises: widget.workoutExercises,
                 workoutname: widget.workoutName,
                 createNewWorkout: widget.createNewWorkout,
@@ -68,7 +67,9 @@ class Exrecises {
       required this.name,
       required this.url,
       required this.description,
-      required this.category});
+      required this.category,
+      required this.builtIn});
+  final bool builtIn;
   final String docID;
   final String name;
   final String url;
@@ -77,24 +78,23 @@ class Exrecises {
 }
 
 class NewWorkout extends StatefulWidget {
-  const NewWorkout(
-      {super.key,
-      required this.addworkout,
-      required this.deleteExercise,
-      required this.updateWorkout,
-      required this.exercises,
-      required this.workoutExercises,
-      required this.workoutname,
-      required this.createNewWorkout,
-      required this.workoutID,
-      required this.defaultExercises});
+  const NewWorkout({
+    super.key,
+    required this.addworkout,
+    required this.deleteExercise,
+    required this.updateWorkout,
+    required this.exercises,
+    required this.workoutExercises,
+    required this.workoutname,
+    required this.createNewWorkout,
+    required this.workoutID,
+  });
 
   final FutureOr<void> Function(String newWorkout, List list) addworkout;
   final FutureOr<void> Function(String docID) deleteExercise;
   final FutureOr<void> Function(String workoutName, List list, String docID)
       updateWorkout;
   final List<Exrecises> exercises;
-  final List<Exrecises> defaultExercises;
   final List<String> workoutExercises;
   final workoutname;
   final bool createNewWorkout;
@@ -211,7 +211,6 @@ class _NewWorkoutState extends State<NewWorkout> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value as String;
-                    print(widget.defaultExercises);
                   });
                 },
                 buttonHeight: 40,
@@ -232,9 +231,9 @@ class _NewWorkoutState extends State<NewWorkout> {
                   children: <Widget>[
                     if (selectedValue == null || selectedValue == 'All') ...[
                       for (var newWorkout in widget.exercises)
-                        exerciseCards(newWorkout),
-                      for (var defaultExercise in widget.defaultExercises)
-                        defaultExerciseCards(defaultExercise),
+                        newWorkout.builtIn
+                            ? defaultExerciseCards(newWorkout)
+                            : exerciseCards(newWorkout),
                     ] else
                       for (var newWorkout in widget.exercises)
                         if (newWorkout.category ==
@@ -402,6 +401,10 @@ class _NewWorkoutState extends State<NewWorkout> {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: ListTile(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Color.fromRGBO(68, 138, 255, 1)),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
         leading: IconButton(
             icon: Icon(
               Icons.add_circle_rounded,

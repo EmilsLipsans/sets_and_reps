@@ -151,7 +151,7 @@ class _WorkoutState extends State<WorkoutPage> {
           children: [
             Expanded(
               flex: 9,
-              child: widget.workouts.length != 0
+              child: widget.workouts.length > 2 //Default workout count
                   ? workoutCardList(widget.workouts)
                   : Center(child: Paragraph('No workouts added')),
             ),

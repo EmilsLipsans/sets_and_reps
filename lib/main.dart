@@ -471,6 +471,14 @@ class ApplicationState extends ChangeNotifier {
               List.from(recordedExerciseList),
               document.id));
           eventDate = document.data()['timestamp'];
+          if (snapshot.docs.length == count) {
+            _workoutRecordList.add(
+              CalendarEvent(
+                eventDate,
+                List.from(daysEvents),
+              ),
+            );
+          }
         }
 
         recordedExerciseList.clear();

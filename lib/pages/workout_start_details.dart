@@ -3,9 +3,9 @@ import 'package:gtk_flutter/main.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/workout_start_details_end.dart';
 import 'package:gtk_flutter/src/widgets.dart';
+import 'package:gtk_flutter/utils/quantity_Input.dart';
 import 'package:gtk_flutter/utils/showDialog.dart';
 import 'package:provider/provider.dart';
-import 'package:quantity_input/quantity_input.dart';
 
 class StartWorkoutDetailsRoute extends StatefulWidget {
   StartWorkoutDetailsRoute({super.key, required this.workout});
@@ -132,6 +132,8 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
     updateList(list);
   }
 
+  TextEditingController _weightController = new TextEditingController();
+  TextEditingController _repsController = new TextEditingController();
   double weightInput = 0.0;
   int repsInput = 0;
   int listPos = 0;
@@ -253,6 +255,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                         type: QuantityInputType.double,
                         acceptsZero: true,
                         value: weightInput,
+                        controller: _weightController,
                         inputWidth: 100,
                         minValue: double.infinity,
                         step: 2.5,
@@ -279,6 +282,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                     QuantityInput(
                         value: repsInput,
                         inputWidth: 100,
+                        controller: _repsController,
                         acceptsZero: true,
                         onChanged: (value) => setState(() =>
                             repsInput = int.parse(value.replaceAll(',', '')))),
@@ -305,6 +309,18 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                                     : setState(() {
                                         repsInput = 0;
                                         weightInput = 0.0;
+                                        _weightController
+                                          ..value = TextEditingValue(
+                                              text: '0.0',
+                                              selection:
+                                                  TextSelection.collapsed(
+                                                      offset: 2));
+                                        _repsController
+                                          ..value = TextEditingValue(
+                                              text: '0',
+                                              selection:
+                                                  TextSelection.collapsed(
+                                                      offset: 1));
                                       });
                               },
                               height: 50,

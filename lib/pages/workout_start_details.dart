@@ -322,23 +322,28 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                           ),
                           Expanded(
                             child: MaterialButton(
-                              color: Color.fromARGB(255, 71, 250, 77),
+                              color: repsInput != 0
+                                  ? Color.fromARGB(255, 71, 250, 77)
+                                  : Colors.grey,
                               disabledColor: Colors.grey,
-                              onPressed: () {
-                                exerciseCardTapped
-                                    ? setState(() {
-                                        recordedExercises[cardSelected] =
-                                            RecordExercise(
-                                                reps: repsInput,
-                                                weight: weightInput);
-                                        exerciseCardTapped = false;
-                                      })
-                                    : setState(() {
-                                        recordedExercises.add(RecordExercise(
-                                            reps: repsInput,
-                                            weight: weightInput));
-                                      });
-                              },
+                              onPressed: repsInput != 0
+                                  ? () {
+                                      exerciseCardTapped
+                                          ? setState(() {
+                                              recordedExercises[cardSelected] =
+                                                  RecordExercise(
+                                                      reps: repsInput,
+                                                      weight: weightInput);
+                                              exerciseCardTapped = false;
+                                            })
+                                          : setState(() {
+                                              recordedExercises.add(
+                                                  RecordExercise(
+                                                      reps: repsInput,
+                                                      weight: weightInput));
+                                            });
+                                    }
+                                  : null,
                               height: 50,
                               minWidth: 100,
                               child: Text(

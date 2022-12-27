@@ -238,7 +238,9 @@ class _NewWorkoutState extends State<NewWorkout> {
                       for (var newWorkout in widget.exercises)
                         if (newWorkout.category ==
                             filterByItemPos(selectedValue as String, items))
-                          exerciseCards(newWorkout),
+                          newWorkout.builtIn
+                              ? defaultExerciseCards(newWorkout)
+                              : exerciseCards(newWorkout),
                     Card(
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(

@@ -413,35 +413,37 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                           child: Align(
                             alignment: Alignment.bottomRight,
                             child: Ink(
-                              decoration: const ShapeDecoration(
-                                color: Colors.blue,
+                              decoration: ShapeDecoration(
+                                color: listPos != 0 ? Colors.blue : Colors.grey,
                                 shape: CircleBorder(),
                               ),
                               child: IconButton(
-                                  icon:
-                                      const Icon(Icons.arrow_back_ios_rounded),
+                                  icon: Icon(Icons.arrow_back_ios_rounded),
                                   color: Colors.white,
-                                  onPressed: () {
-                                    setState(() {
-                                      if (listPos != 0) {
-                                        widget.prevPressed();
-                                        if (recordedWorkout
-                                            .asMap()
-                                            .containsKey(listPos))
-                                          updateRecordWorkout();
-                                        else
-                                          addRecordWorkout();
+                                  disabledColor: Colors.white,
+                                  onPressed: listPos != 0
+                                      ? () {
+                                          setState(() {
+                                            if (listPos != 0) {
+                                              widget.prevPressed();
+                                              if (recordedWorkout
+                                                  .asMap()
+                                                  .containsKey(listPos))
+                                                updateRecordWorkout();
+                                              else
+                                                addRecordWorkout();
 
-                                        recordedExercises.clear();
-                                        listPos -= 1;
-                                        exerciseCardTapped = false;
-                                        if (recordedWorkout
-                                            .asMap()
-                                            .containsKey(listPos))
-                                          loadRecordedExercise();
-                                      }
-                                    });
-                                  }),
+                                              recordedExercises.clear();
+                                              listPos -= 1;
+                                              exerciseCardTapped = false;
+                                              if (recordedWorkout
+                                                  .asMap()
+                                                  .containsKey(listPos))
+                                                loadRecordedExercise();
+                                            }
+                                          });
+                                        }
+                                      : null),
                             ),
                           ),
                         ),

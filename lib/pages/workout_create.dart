@@ -333,6 +333,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                                 ? Text('Workout Saved')
                                 : Text('Workout Edited'),
                           );
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       },

@@ -91,7 +91,7 @@ class _MyTabbedPageState extends State<WorkoutsPage>
               MaterialPageRoute(
                   builder: (context) => const CreateWorkoutRoute(
                         workoutExercises: [],
-                        actionName: 'Add Workout',
+                        actionName: 'Create Workout',
                         workoutName: null,
                         createNewWorkout: true,
                         workoutID: null,
@@ -153,7 +153,7 @@ class _WorkoutState extends State<WorkoutPage> {
               flex: 9,
               child: widget.workouts.length > 2 //Default workout count
                   ? workoutCardList(widget.workouts)
-                  : Center(child: Paragraph('No workouts added')),
+                  : Center(child: Paragraph('No workouts created')),
             ),
             Spacer(),
           ],

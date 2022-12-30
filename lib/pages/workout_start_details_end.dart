@@ -192,7 +192,7 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
                 height: 50,
                 minWidth: 300,
                 child: Text(
-                  "Save",
+                  "Finish",
                   style: TextStyle(color: Colors.white),
                 ),
                 shape: RoundedRectangleBorder(

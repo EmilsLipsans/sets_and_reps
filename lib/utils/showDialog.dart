@@ -187,6 +187,7 @@ showWorkoutDetails(context, workout, exerciseList) {
                                               child: Text(
                                                 "${exercise.name}",
                                                 textAlign: TextAlign.left,
+                                                overflow: TextOverflow.ellipsis,
                                               )),
                                         ),
                                       ],

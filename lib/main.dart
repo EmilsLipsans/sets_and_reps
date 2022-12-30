@@ -229,6 +229,19 @@ class ApplicationState extends ChangeNotifier {
     equals: isSameDay,
     hashCode: getHashCode,
   );
+  bool uniqueWorkoutName(String name, docID) {
+    for (var workout in workoutList) {
+      if (workout.name == name && workout.docID != docID) return false;
+    }
+    return true;
+  }
+
+  bool uniqueExerciseName(String name, docID) {
+    for (var exercise in exerciseList) {
+      if (exercise.name == name && exercise.docID != docID) return false;
+    }
+    return true;
+  }
 
   StreamSubscription<QuerySnapshot>? _lastWorkoutRecordSubscription;
   late WorkoutRecord finalWorkout =

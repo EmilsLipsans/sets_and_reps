@@ -7,9 +7,9 @@ import 'package:gtk_flutter/utils/dropdown.dart';
 import 'package:provider/provider.dart';
 
 class UpdateExerciseRoute extends StatefulWidget {
-  UpdateExerciseRoute({super.key, required this.workout});
+  UpdateExerciseRoute({super.key, required this.exercise});
 
-  final workout;
+  final exercise;
   State<UpdateExerciseRoute> createState() => UpdateExerciseRouteState();
 }
 
@@ -29,7 +29,8 @@ class UpdateExerciseRouteState extends State<UpdateExerciseRoute> {
                 updateExercise: (name, description, url, category, docID) =>
                     appState.updateExercise(
                         name, description, url, category, docID),
-                workout: widget.workout,
+                exercise: widget.exercise,
+                uniqueExerciseName: appState.uniqueExerciseName,
               ),
             ),
           ],
@@ -43,11 +44,13 @@ class UpdateExercise extends StatefulWidget {
   const UpdateExercise({
     super.key,
     required this.updateExercise,
-    required this.workout,
+    required this.exercise,
+    required this.uniqueExerciseName,
   });
   final FutureOr<void> Function(String name, String description, String url,
       int category, String docID) updateExercise;
-  final workout;
+  final exercise;
+  final uniqueExerciseName;
 
   @override
   State<UpdateExercise> createState() => _UpdateExerciseState();
@@ -74,7 +77,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
     'Triceps',
     'Other',
   ];
-  late String? selectedValue = items[widget.workout.category - 1];
+  late String? selectedValue = items[widget.exercise.category - 1];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -92,7 +95,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 40,
                       controller: _nameController
-                        ..text = '${widget.workout.name}',
+                        ..text = '${widget.exercise.name}',
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Exercise Name',
@@ -167,7 +170,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 255,
                       controller: _descriptionController
-                        ..text = '${widget.workout.description}',
+                        ..text = '${widget.exercise.description}',
                       decoration: InputDecoration(
                         labelText: 'Exercise Description',
                         contentPadding: const EdgeInsets.only(
@@ -191,7 +194,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     TextFormField(
                       maxLength: 160,
                       controller: _urlController
-                        ..text = '${widget.workout.url}',
+                        ..text = '${widget.exercise.url}',
                       decoration: InputDecoration(
                         labelText: 'Example Video URL',
                         contentPadding: const EdgeInsets.only(
@@ -214,24 +217,31 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                       color: Colors.blueAccent,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          print(
-                            getItemPos(selectedValue as String, items),
-                          );
-                          await widget.updateExercise(
-                            _nameController.text,
-                            _descriptionController.text,
-                            _urlController.text,
-                            getItemPos(selectedValue as String, items),
-                            widget.workout.docID,
-                          );
-                          _nameController.clear();
-                          _urlController.clear();
-                          _descriptionController.clear();
-                          Navigator.pop(context);
-                          final snackBar = SnackBar(
-                            content: const Text('Exercise Edited'),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          if (widget.uniqueExerciseName(
+                              _nameController.text, widget.exercise.docID)) {
+                            await widget.updateExercise(
+                              _nameController.text,
+                              _descriptionController.text,
+                              _urlController.text,
+                              getItemPos(selectedValue as String, items),
+                              widget.exercise.docID,
+                            );
+                            _nameController.clear();
+                            _urlController.clear();
+                            _descriptionController.clear();
+                            Navigator.pop(context);
+                            final snackBar = SnackBar(
+                              content: const Text('Exercise Edited'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else {
+                            final snackBar = SnackBar(
+                              content: const Text('Exercise name is taken'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
                         }
                       },
                       height: 50,

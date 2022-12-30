@@ -14,7 +14,7 @@ class StartWorkoutRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Workout'),
+        title: const Text('Start Workout'),
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Column(

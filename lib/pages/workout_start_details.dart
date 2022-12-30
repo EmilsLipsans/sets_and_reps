@@ -39,7 +39,7 @@ class StartWorkoutDetailsRouteState extends State<StartWorkoutDetailsRoute> {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('ok'),
+                        child: const Text('OK'),
                       ),
                     ],
                   ),

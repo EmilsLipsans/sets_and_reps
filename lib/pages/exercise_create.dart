@@ -27,6 +27,7 @@ class CreateExerciseRouteState extends State<CreateExerciseRoute> {
               child: NewExercise(
                 addExercise: (name, description, url, category) => appState
                     .createNewExercise(name, description, url, category),
+                uniqueExerciseName: appState.uniqueExerciseName,
               ),
             ),
           ],
@@ -40,10 +41,11 @@ class NewExercise extends StatefulWidget {
   const NewExercise({
     super.key,
     required this.addExercise,
+    required this.uniqueExerciseName,
   });
   final FutureOr<void> Function(
       String name, String description, String url, int category) addExercise;
-
+  final uniqueExerciseName;
   @override
   State<NewExercise> createState() => _NewExerciseState();
 }
@@ -202,18 +204,28 @@ class _NewExerciseState extends State<NewExercise> {
                       color: Colors.blueAccent,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await widget.addExercise(
-                              _nameController.text,
-                              _descriptionController.text,
-                              _urlController.text,
-                              getItemPos(selectedValue as String, items));
-                          _nameController.clear();
-                          _urlController.clear();
-                          _descriptionController.clear();
-                          final snackBar = SnackBar(
-                            content: const Text('Exercise Saved'),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          if (widget.uniqueExerciseName(
+                              _nameController.text, '')) {
+                            await widget.addExercise(
+                                _nameController.text,
+                                _descriptionController.text,
+                                _urlController.text,
+                                getItemPos(selectedValue as String, items));
+                            _nameController.clear();
+                            _urlController.clear();
+                            _descriptionController.clear();
+                            final snackBar = SnackBar(
+                              content: const Text('Exercise Saved'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else {
+                            final snackBar = SnackBar(
+                              content: const Text('Exercise name is taken'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
                         }
                       },
                       height: 50,

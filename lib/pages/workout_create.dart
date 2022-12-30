@@ -327,13 +327,12 @@ class _NewWorkoutState extends State<NewWorkout> {
                           _nameController.clear();
                           list.clear();
                           _incrementCounter(list.length);
-                          if (!widget.createNewWorkout) Navigator.pop(context);
+                          Navigator.pop(context);
                           final snackBar = SnackBar(
                             content: widget.createNewWorkout
                                 ? Text('Workout Saved')
                                 : Text('Workout Edited'),
                           );
-                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       },

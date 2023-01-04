@@ -342,7 +342,7 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                                   ? Color.fromARGB(255, 71, 250, 77)
                                   : Colors.grey,
                               disabledColor: Colors.grey,
-                              onPressed: repsInput != 0
+                              onPressed: (repsInput > 0 && weightInput >= 0)
                                   ? () {
                                       exerciseCardTapped
                                           ? setState(() {

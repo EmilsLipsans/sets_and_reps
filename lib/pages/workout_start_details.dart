@@ -394,6 +394,18 @@ class _RecordWorkoutPageState extends State<RecordWorkoutPage> {
                                   child: ListTile(
                                     tileColor:
                                         Color.fromARGB(255, 255, 255, 255),
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        color: (exerciseCardTapped &&
+                                                cardSelected ==
+                                                    recordedExercises.indexOf(
+                                                        recordedExercise))
+                                            ? Color.fromRGBO(68, 138, 255, 1)
+                                            : Color.fromARGB(
+                                                255, 255, 255, 255),
+                                      ),
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
                                     title: Row(
                                       children: [
                                         Expanded(

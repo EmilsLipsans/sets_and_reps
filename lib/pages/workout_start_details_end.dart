@@ -183,7 +183,7 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
             ),
             Center(
               child: MaterialButton(
-                color: Colors.blueAccent,
+                color: Colors.blue,
                 onPressed: () async {
                   await widget.recordWorkout(
                       widget.workout.docID, formatData());

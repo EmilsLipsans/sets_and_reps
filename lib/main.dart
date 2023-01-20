@@ -12,7 +12,6 @@ import 'package:gtk_flutter/pages/login_screen.dart';
 import 'package:gtk_flutter/pages/workout_create.dart';
 import 'package:gtk_flutter/pages/home.dart';
 import 'package:gtk_flutter/pages/profile.dart';
-import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/pages/workouts.dart';
 import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:provider/provider.dart';

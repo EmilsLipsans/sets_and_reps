@@ -5,7 +5,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/main.dart';
-import 'package:gtk_flutter/pages/workout_start_details.dart';
 import 'package:gtk_flutter/utils/nameLists.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';

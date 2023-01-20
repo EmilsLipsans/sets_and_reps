@@ -214,7 +214,7 @@ class _UpdateExerciseState extends State<UpdateExercise> {
                     ),
                     Spacer(),
                     MaterialButton(
-                      color: Colors.blueAccent,
+                      color: Colors.blue,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           if (widget.uniqueExerciseName(

@@ -65,7 +65,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
             ),
             Center(
               child: MaterialButton(
-                color: Colors.blueAccent,
+                color: Colors.blue,
                 disabledColor: Colors.grey,
                 onPressed: checkedWorkout == null
                     ? null

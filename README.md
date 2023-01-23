@@ -7,22 +7,20 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#business-requirements">Business requirements</a></li>
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#ui-examples">UI examples</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#workout-plan">Workout plan</a></li>
+        <li><a href="#record-workout">Record workout</a></li>
+        <li><a href="#calendar">Record workout</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#want-to-try-out-the-app">Want to try out the app?</a></li>
   </ol>
 </details>
 
@@ -42,7 +40,7 @@ Keywords:
 * Flutter
 * Fitness
 * Firebase
-
+<!-- BUSINESS REQUIREMENTS -->
 ### Business requirements
 
 A non-registered user must be able to create a new profile using their email or
@@ -59,161 +57,105 @@ A registered user must be able to:
 * Record workout
 * View and delete the record workout entries
 
+<!-- UI EXAMPLES -->
 ## UI examples
 
-All aplication views are avalible in the documentation: link. Shown below are some of the main views. 
+All aplication views are avalible in the [documentation](https://github.com/EmilsLipsans/sets_and_reps/blob/master/Lipsans_Emils_EL20054.pdf). Shown below are some of the main views. 
 
+<!-- AUTHENTICATION -->
 <h3 align="center">
 Authentication</h3>
 
+<p align="center">
+<img 
+src="/screenshots/auth.jfif" 
+alt="Alt text" 
+title="Authentication"
+style="width:30%">
+</p>
+
+<!-- HOME -->
 <h3 align="center">
 Home</h3>
 
+<p align="center">
+<img 
+src="/screenshots/home.jfif" 
+alt="Alt text" 
+title="Home"
+style="width:30%">
+<img 
+src="/screenshots/home2.jfif" 
+alt="Alt text" 
+title="Home with record"
+style="width:30%">
+</p>
+
+<!-- WORKOUT PLAN -->
 <h3 align="center">
 Workout plan</h3>
 
-<h3 align="center">
-Workout recording</h3>
+<p align="center">
+<img 
+src="/screenshots/builtin_workouts.jfif" 
+alt="Alt text" 
+title="Built-in workouts"
+style="width:30%">
+<img 
+src="/screenshots/custom_workouts.jfif" 
+alt="Alt text" 
+title="Custom workouts"
+style="width:30%">
+<img 
+src="/screenshots/create_workout.jfif" 
+alt="Alt text" 
+title="Edit workout"
+style="width:30%">
+</p>
 
+<!-- RECORD WORKOUT -->
+<h3 align="center">
+Record workout</h3>
+
+<p align="center">
+<img 
+src="/screenshots/record.jfif" 
+alt="Alt text" 
+title="Record workout"
+style="width:30%">
+<img 
+src="/screenshots/record1.jfif" 
+alt="Alt text" 
+title="Record workout 2"
+style="width:30%">
+<img 
+src="/screenshots/finish_record.jfif" 
+alt="Alt text" 
+title="Finish recording"
+style="width:30%">
+</p>
+
+<!-- CALENDAR -->
 <h3 align="center">
 Calendar</h3>
+<p align="center">
+<img 
+src="/screenshots/calendar.jfif" 
+alt="Alt text" 
+title="Calendar"
+style="width:30%">
+<img 
+src="/screenshots/calendar_view.jfif" 
+alt="Alt text" 
+title="Calendar view"
+style="width:30%">
+</p>
+
+<!-- WANT TO TRY OUT THE APP? -->
+## Want to try out the app?
+
+Since this application was made for my usage and for learning purposes it is not available in the Google play store or Apple app store.
+
+I have built and tested Sets & Reps only for Android. Download the apk file here: [Sets&Reps.apk](https://failiem.lv/u/z36zkdtdk?ak=8bb52)
 
 
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png

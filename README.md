@@ -60,7 +60,7 @@ A registered user must be able to:
 <!-- UI EXAMPLES -->
 ## UI examples
 
-All aplication views are avalible in the [documentation](https://github.com/EmilsLipsans/sets_and_reps/blob/master/Lipsans_Emils_EL20054.pdf). Shown below are some of the main views. 
+All aplication views are avalible in the [documentation](https://failiem.lv/u/z36zkdtdk?ak=8bb52#/view/e6jc5zy42). Shown below are some of the main views. 
 
 <!-- AUTHENTICATION -->
 <h3 align="center">
